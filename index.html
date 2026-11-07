@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Social Selling Lab · Del scroll hasta la compra</title>
+<meta name="description" content="Laboratorio interactivo de social selling: identidad, credibilidad, participación, prueba social, social commerce y confianza.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#101433;--ink2:#2a3052;--muted:#5b6280;--paper:#fff;--court:#e9ebf2;--court2:#f4f5f9;--line:#d5d9e6;--cobalt:#2c3dff;--cobalt2:#1f2bd1;--pink:#ff2e7e;--mint:#0fa877;--amber:#c98a00;--r:18px;--font:'Archivo',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--court);color:var(--ink);font:400 16px/1.6 var(--font);font-stretch:100%}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--cobalt2)}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hidden{display:none!important}
+h1,h2,h3{margin:0;line-height:1.02;letter-spacing:-.01em}
+.display{font-weight:900;font-stretch:62%;text-transform:uppercase;letter-spacing:-.005em}
+p{margin:0 0 .9em}
+
+/* ---------- botones ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;padding:14px 24px;font-weight:800;font-size:1rem;background:var(--ink);color:#fff;transition:transform .15s,background .2s,box-shadow .2s;text-decoration:none}
+.btn:hover{background:var(--cobalt)}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--cobalt);box-shadow:0 10px 24px -10px #2c3dffaa}
+.btn.primary:hover{background:var(--cobalt2)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ---------- portada ---------- */
+#landing{min-height:100vh;display:grid;align-content:center;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:clamp(24px,5vw,72px);align-items:center;padding:clamp(22px,5vw,64px) clamp(18px,6vw,88px);max-width:1360px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-stretch:80%;font-size:1.05rem}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:var(--ink);display:grid;place-items:center;color:#fff}
+.brand-mark svg{width:20px;height:20px}
+.hero-title{font-size:clamp(3.2rem,8vw,7rem);margin:24px 0 18px}
+.hero-title span{display:block}
+.hero-title .l2{font-stretch:125%;font-weight:300;font-size:.42em;letter-spacing:.01em;text-transform:none;margin:.18em 0 .12em;color:var(--ink2)}
+.hero-lead{font-size:clamp(1.05rem,1.5vw,1.2rem);max-width:34em;color:var(--ink2)}
+.hero-facts{display:flex;flex-wrap:wrap;gap:8px 18px;margin:18px 0 26px;padding:0;list-style:none;color:var(--muted);font-size:.92rem}
+.hero-facts li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pink);margin-right:8px;vertical-align:2px}
+.login{background:var(--paper);border-radius:24px;padding:24px;max-width:520px;box-shadow:0 30px 60px -40px #10143380}
+.login h2{font-size:1.25rem;font-weight:800;font-stretch:90%;margin-bottom:4px}
+.login p{color:var(--muted);font-size:.93rem}
+.userbox{display:flex;border:2px solid var(--line);border-radius:14px;overflow:hidden;background:var(--court2);transition:border-color .2s}
+.userbox:focus-within{border-color:var(--cobalt)}
+.userbox input{flex:1;min-width:0;border:0;background:transparent;padding:14px 16px;font-size:1.05rem;outline:0}
+.userbox span{display:flex;align-items:center;padding:0 14px;color:var(--muted);font-size:.82rem;border-left:1px solid var(--line);white-space:nowrap}
+.who{display:none;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--court2)}
+.who.ok,.who.no{display:flex;animation:pop-in .35s cubic-bezier(.2,1.4,.4,1)}
+.who.ok{background:#e8fbf3}.who.no{background:#fff0f5}
+.who .av{width:42px;height:42px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;background:var(--mint)}
+.who.no .av{background:var(--pink)}
+.who strong{display:block;line-height:1.25}
+.who small{color:var(--muted);font-size:.84rem;line-height:1.35;display:block}
+.login .btn{margin-top:16px;width:100%}
+.err{color:#c4004d;font-size:.88rem;min-height:1.2em;margin-top:8px}
+.disclaimer{font-size:.78rem;color:var(--muted);margin-top:14px;line-height:1.45}
+
+/* ---------- teléfono ---------- */
+.phone{position:relative;width:min(100%,320px);aspect-ratio:9/18.6;margin:0 auto;border-radius:46px;background:var(--ink);padding:11px;box-shadow:0 40px 70px -30px #10143399,inset 0 0 0 2px #3a4170}
+.phone::before{content:"";position:absolute;top:19px;left:50%;width:84px;height:22px;border-radius:12px;background:var(--ink);transform:translateX(-50%);z-index:5}
+.screen{position:relative;height:100%;border-radius:36px;background:#fff;overflow:hidden;display:flex;flex-direction:column;font-size:13px;line-height:1.4}
+.app-top{display:flex;align-items:center;justify-content:space-between;padding:42px 14px 8px;border-bottom:1px solid #eef0f5}
+.app-top b{font-size:15px;font-stretch:85%}
+.app-top i{font-style:normal;color:var(--muted)}
+.feed{flex:1;overflow:hidden;position:relative}
+.post-head{display:flex;align-items:center;gap:8px;padding:10px 12px}
+.post-av{width:30px;height:30px;border-radius:50%;background:conic-gradient(var(--pink),var(--cobalt),var(--pink));padding:2px}
+.post-av span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:900}
+.post-head b{font-size:12.5px}.post-head small{display:block;color:var(--muted);font-size:10.5px;line-height:1.1}
+.media{position:relative;aspect-ratio:1/1;background:var(--cobalt);overflow:hidden;display:grid;place-items:center;color:#fff}
+.media .art{position:absolute;inset:0}
+.media .art i{position:absolute;left:-10%;width:120%;height:12%;background:#ffffff14;transform:rotate(-24deg)}
+.media .art i:nth-child(1){top:22%}.media .art i:nth-child(2){top:44%}.media .art i:nth-child(3){top:66%}
+.media .shoe{font-size:74px;filter:drop-shadow(0 14px 10px #0005);transition:transform .5s cubic-bezier(.3,1.5,.5,1)}
+.media .tagline{position:absolute;left:12px;right:12px;bottom:12px;font-weight:900;font-stretch:62%;font-size:22px;line-height:.95;text-transform:uppercase;text-shadow:0 2px 12px #0004}
+.media .fmt{position:absolute;top:10px;right:10px;background:#0008;border-radius:999px;padding:3px 9px;font-size:10px;font-weight:700}
+.media.carrusel .dots{position:absolute;bottom:-18px;left:0;right:0;display:flex;gap:4px;justify-content:center}
+.media.historia{aspect-ratio:9/12}
+.poll{position:absolute;left:14px;right:14px;top:40%;background:#fff;color:var(--ink);border-radius:12px;padding:8px 10px;font-weight:800;font-size:12px;box-shadow:0 8px 20px #0003}
+.poll div{display:flex;gap:6px;margin-top:6px}.poll span{flex:1;border-radius:8px;background:var(--court);text-align:center;padding:4px}
+.actions{display:flex;align-items:center;gap:14px;padding:8px 12px 2px;font-size:18px}
+.actions .heart{color:var(--pink);display:inline-block}
+.actions .heart.beat{animation:beat .5s ease}
+.likes{padding:0 12px;font-weight:800;font-size:12.5px}
+.caption{padding:2px 12px 6px;font-size:12.5px}
+.caption b{margin-right:4px}
+.comments{padding:0 12px 10px;display:grid;gap:6px}
+.cm{display:flex;gap:7px;align-items:flex-start;font-size:12px;animation:slide-in .4s ease both}
+.cm .ca{flex:0 0 auto;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:9px;font-weight:900;color:#fff;background:var(--muted)}
+.cm.brand .ca{background:var(--ink)}
+.cm.angry .ca{background:var(--pink)}
+.notif{position:absolute;left:10px;right:10px;top:40px;z-index:4;background:#ffffffee;backdrop-filter:blur(8px);border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 12px 30px -10px #10143366;font-size:12px;animation:notif 3.2s ease both}
+.notif .ni{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;background:var(--pink);flex:0 0 auto;font-size:14px}
+.notif small{display:block;color:var(--muted)}
+/* perfil de creador en el teléfono */
+.profile{padding:14px}
+.profile .pav{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:22px;color:#fff;background:var(--ink);margin-bottom:8px}
+.pstats{display:flex;justify-content:space-between;text-align:center;margin:10px 0;font-size:11px;color:var(--muted)}
+.pstats b{display:block;font-size:15px;color:var(--ink)}
+.erbar{height:8px;border-radius:9px;background:var(--court);overflow:hidden;margin:4px 0 10px}
+.erbar i{display:block;height:100%;background:var(--pink);border-radius:9px;transition:width .8s cubic-bezier(.3,1,.4,1)}
+/* tienda / checkout en el teléfono */
+.shop{padding:12px;display:grid;gap:8px}
+.shop .prod{display:flex;gap:10px;align-items:center;background:var(--court2);border-radius:14px;padding:10px}
+.shop .prod span{font-size:34px}
+.shop .row{display:flex;justify-content:space-between;font-size:12px;border-bottom:1px dashed var(--line);padding:4px 0}
+.shop .pay{background:var(--ink);color:#fff;border-radius:12px;text-align:center;padding:10px;font-weight:800}
+.shop .ok{color:var(--mint);font-weight:800}
+.shop .warn{color:var(--pink);font-weight:800}
+.mini-funnel{display:grid;gap:5px;padding:12px}
+.mini-funnel div{display:flex;justify-content:space-between;align-items:center;font-size:11.5px}
+.mini-funnel i{display:block;height:6px;border-radius:9px;background:var(--cobalt);margin-top:2px;transition:width .7s cubic-bezier(.3,1,.4,1)}
+
+/* teléfono de la portada */
+.hero-phone{position:relative}
+.hero-phone .orbit{position:absolute;inset:-6% -12%;pointer-events:none}
+.float-chip{position:absolute;background:#fff;border-radius:999px;padding:9px 14px;font-weight:800;font-size:.85rem;box-shadow:0 18px 40px -18px #10143388;display:flex;gap:8px;align-items:center;opacity:0;animation:chip .7s cubic-bezier(.2,1.4,.4,1) forwards}
+.float-chip i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12px}
+.fc1{top:30%;left:-14%;animation-delay:.9s}.fc1 i{background:var(--cobalt)}
+.fc2{top:42%;right:-8%;animation-delay:2.1s}.fc2 i{background:var(--pink)}
+.fc3{bottom:14%;left:-10%;animation-delay:3.3s}.fc3 i{background:var(--mint)}
+.fc4{bottom:-2%;right:4%;animation-delay:4.5s}.fc4 i{background:var(--ink)}
+
+/* ---------- app ---------- */
+#app{min-height:100vh}
+.topbar{position:sticky;top:0;z-index:30;background:#e9ebf2e6;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px clamp(14px,3vw,32px)}
+.topbar .brand{margin-right:auto}
+.chip{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:999px;padding:6px 12px 6px 6px;font-size:.88rem;font-weight:700}
+.chip .av{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:.72rem;font-weight:900}
+.score-chip{background:var(--ink);color:#fff;border-radius:999px;padding:8px 14px;font-weight:800;font-size:.9rem;white-space:nowrap}
+.rail{max-width:1320px;margin:0 auto;padding:0 clamp(14px,3vw,32px) 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.stage{flex:1 0 auto;display:flex;align-items:center;gap:8px;border:0;background:transparent;border-radius:999px;padding:6px 12px 6px 6px;font-weight:700;font-size:.86rem;color:var(--muted);transition:background .2s,color .2s}
+.stage .dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--muted);font-size:.8rem;transition:background .3s,color .3s,transform .3s}
+.stage.done{color:var(--ink)}.stage.done .dot{background:var(--mint);color:#fff}
+.stage.now{background:#fff;color:var(--ink)}.stage.now .dot{background:var(--cobalt);color:#fff;transform:scale(1.08)}
+.stage:disabled{cursor:not-allowed;opacity:.55}
+.layout{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:clamp(20px,3vw,44px);padding:clamp(18px,3vw,36px) clamp(14px,3vw,32px) 80px}
+.side{position:sticky;top:120px;align-self:start;display:grid;gap:16px}
+.content{min-width:0;max-width:760px}
+.mhead{margin-bottom:22px}
+.mhead .kick{display:inline-flex;gap:8px;align-items:center;font-weight:800;color:var(--cobalt);font-size:.95rem;margin-bottom:12px}
+.mhead .kick b{background:var(--cobalt);color:#fff;border-radius:999px;padding:2px 10px;font-size:.82rem}
+.mhead h1{font-size:clamp(2.3rem,5.4vw,4rem)}
+.mhead p{font-size:1.15rem;color:var(--ink2);margin-top:14px;max-width:36em}
+.block{background:var(--paper);border-radius:var(--r);padding:clamp(18px,3vw,28px);margin-bottom:16px}
+.block h2{font-size:1.35rem;font-weight:800;font-stretch:90%;margin-bottom:10px;line-height:1.15}
+.block .step{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--court);font-size:.8rem;font-weight:900;margin-right:8px;vertical-align:3px}
+.block.done .step{background:var(--mint);color:#fff}
+.help{color:var(--muted);font-size:.95rem}
+.terms{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.term{border:0;text-align:left;background:var(--court2);border-radius:14px;padding:12px 14px;font-size:.88rem;line-height:1.4;transition:background .2s}
+.term b{display:block;font-size:.95rem;margin-bottom:2px}
+.term[aria-expanded=false] span{display:none}
+.term[aria-expanded=false]::after{content:"Ver definición";color:var(--cobalt);font-size:.8rem;font-weight:700}
+.term[aria-expanded=true]{background:#eef0ff}
+.case{display:flex;gap:14px;align-items:flex-start;background:var(--court2);border-radius:14px;padding:14px 16px;margin-top:14px}
+.case .badge{flex:0 0 auto;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:800;background:var(--ink);color:#fff}
+.case .badge.sim{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.case p{margin:0;font-size:.93rem}
+.case b{display:block}
+
+/* opciones */
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:14px 16px;line-height:1.45;transition:border-color .2s,background .2s,transform .15s}
+.opt:hover:not(:disabled){border-color:#9aa3c7}
+.opt .mk{flex:0 0 auto;width:22px;height:22px;border-radius:50%;border:2px solid #9aa3c7;margin-top:1px;display:grid;place-items:center;transition:all .2s}
+.opt[aria-checked=true]{border-color:var(--cobalt);background:#f2f3ff}
+.opt[aria-checked=true] .mk{border-color:var(--cobalt);background:var(--cobalt);box-shadow:inset 0 0 0 4px #fff}
+.opt.right{border-color:var(--mint);background:#ecfbf5}
+.opt.wrong{border-color:var(--pink);background:#fff2f7}
+.opt:disabled{cursor:default}
+.opt .why{display:block;margin-top:8px;font-size:.88rem;color:var(--ink2)}
+.opt .tagpts{margin-left:auto;flex:0 0 auto;font-weight:800;font-size:.8rem;border-radius:999px;padding:2px 9px;background:var(--court)}
+.opt.just{animation:pick .3s cubic-bezier(.3,1.6,.5,1)}
+textarea,.field input,.field select{width:100%;border:2px solid var(--line);background:var(--court2);border-radius:14px;padding:12px 14px;outline:0;transition:border-color .2s;resize:vertical}
+textarea:focus,.field input:focus,.field select:focus{border-color:var(--cobalt)}
+textarea{min-height:104px;line-height:1.5}
+.field{display:grid;gap:6px;margin-top:14px}
+.field label{font-weight:700;font-size:.95rem}
+.meter{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-top:6px}
+.meter b.ok{color:var(--mint)}
+.submit-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:18px}
+.submit-row small{color:var(--muted)}
+
+/* actividades */
+.ladder{margin-top:12px}
+.ladder input[type=range]{width:100%;accent-color:var(--cobalt)}
+.ladder-labels{display:flex;justify-content:space-between;font-weight:800;font-size:.88rem}
+.ladder-labels span{color:var(--muted);transition:color .2s}
+.ladder-labels span.on{color:var(--cobalt)}
+.classify{display:grid;gap:10px;margin-top:16px}
+.cl-item{background:var(--court2);border-radius:14px;padding:12px 14px}
+.cl-item p{margin:0 0 8px;font-weight:600}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:.88rem;transition:all .2s}
+.seg button[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg button.real[aria-checked=true]{background:var(--mint);border-color:var(--mint)}
+.seg button.fake[aria-checked=true]{background:var(--pink);border-color:var(--pink)}
+.seg button.just{animation:pick .3s cubic-bezier(.3,1.6,.5,1)}
+.creators{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.creator{border:2px solid var(--line);background:#fff;border-radius:16px;padding:14px;text-align:left;display:grid;gap:6px;transition:border-color .2s,background .2s}
+.creator[aria-checked=true]{border-color:var(--cobalt);background:#f2f3ff}
+.creator .cav{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:900}
+.creator b{font-size:1rem;line-height:1.2}
+.creator small{color:var(--muted);line-height:1.3}
+.creator dl{margin:4px 0 0;display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:.82rem}
+.creator dt{color:var(--muted)}.creator dd{margin:0;font-weight:800;text-align:right}
+.creator .er{font-weight:900;color:var(--pink)}
+.builder{display:grid;gap:14px;margin-top:12px}
+.builder h3{font-size:.95rem;font-weight:800;font-stretch:100%;line-height:1.3;margin-bottom:6px}
+.funnel{display:grid;gap:8px;margin-top:14px}
+.fstep{display:grid;grid-template-columns:150px 1fr 80px;gap:10px;align-items:center;border:2px solid transparent;background:var(--court2);border-radius:12px;padding:8px 12px;text-align:left;transition:border-color .2s,background .2s}
+.fstep .bar{height:16px;border-radius:9px;background:#fff;overflow:hidden}
+.fstep .bar i{display:block;height:100%;border-radius:9px;background:var(--cobalt);transition:width .9s cubic-bezier(.3,1,.4,1)}
+.fstep b{text-align:right}
+.fstep small{grid-column:2/4;color:var(--muted);font-size:.8rem}
+.fstep[aria-checked=true]{border-color:var(--cobalt);background:#f2f3ff}
+.fixes{display:grid;gap:8px;margin-top:14px}
+.fix{display:flex;align-items:center;gap:10px;background:var(--court2);border-radius:12px;padding:10px 12px;font-weight:600}
+.fix input{width:20px;height:20px;accent-color:var(--mint)}
+.sales{display:flex;align-items:baseline;gap:10px;margin-top:10px;font-weight:800}
+.sales strong{font-size:2rem;font-stretch:70%;color:var(--mint);transition:color .2s}
+.order{display:grid;gap:8px;margin-top:14px}
+.order button{display:flex;gap:12px;align-items:center;text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 14px;font-weight:700;transition:all .2s}
+.order button .n{width:28px;height:28px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;background:var(--court);font-weight:900;transition:all .25s}
+.order button.on{border-color:var(--cobalt)}.order button.on .n{background:var(--cobalt);color:#fff}
+
+/* retroalimentación */
+.result{background:var(--ink);color:#fff;border-radius:var(--r);padding:clamp(20px,3vw,30px);margin-bottom:16px;animation:rise .45s ease both}
+.result h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;font-stretch:62%;text-transform:uppercase;margin-bottom:6px}
+.result .pts{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
+.result .pts span{background:#ffffff14;border-radius:999px;padding:6px 12px;font-weight:700;font-size:.9rem}
+.result .pts span b{color:#7ef0c8}
+.fb{border-left:3px solid #ffffff33;padding:2px 0 2px 14px;margin:12px 0;color:#d9dcef}
+.fb.good{border-color:#36e0a6}.fb.bad{border-color:var(--pink)}
+.fb b{color:#fff}
+.lesson{background:#ffffff10;border-radius:14px;padding:14px 16px;margin-top:16px}
+.fx{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:.85rem}
+.fx span{border-radius:999px;padding:3px 10px;background:#ffffff14}
+.fx .up{color:#7ef0c8}.fx .down{color:#ff8fb6}
+
+/* panel de indicadores */
+.panel{background:var(--paper);border-radius:var(--r);padding:16px 18px}
+.panel h3{font-size:.95rem;font-weight:800;font-stretch:100%;margin-bottom:10px;line-height:1.3}
+.mrow{display:grid;grid-template-columns:96px 1fr 34px;gap:10px;align-items:center;font-size:.85rem;margin:7px 0}
+.mrow .track{height:9px;border-radius:9px;background:var(--court);overflow:hidden}
+.mrow .track i{display:block;height:100%;border-radius:9px;background:var(--cobalt);transition:width .9s cubic-bezier(.3,1,.4,1)}
+.mrow:nth-child(3) .track i{background:var(--mint)}.mrow:nth-child(4) .track i{background:var(--pink)}.mrow:nth-child(5) .track i{background:var(--ink)}
+.mrow b{text-align:right}
+.panel .note{font-size:.76rem;color:var(--muted);margin:8px 0 0}
+
+/* resultados */
+.final-hero{text-align:center;padding:clamp(20px,5vw,50px) 0 10px}
+.grade{font-size:clamp(6rem,20vw,11rem);font-weight:900;font-stretch:62%;line-height:.9;color:var(--cobalt)}
+.grade small{font-size:.24em;color:var(--muted);font-stretch:100%;font-weight:700}
+.status{display:inline-block;border-radius:999px;padding:6px 16px;font-weight:800;margin:10px 0}
+.status.pass{background:#e8fbf3;color:#0b7d59}.status.fail{background:#fff3df;color:#8a5d00}
+.breakdown{display:grid;gap:6px;margin-top:10px}
+.breakdown div{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:.95rem}
+.attempts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.attempts span{background:var(--court2);border-radius:999px;padding:6px 12px;font-weight:700;font-size:.9rem}
+.actions-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:18px}
+.checklist{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:6px}
+.checklist li{display:flex;gap:10px;align-items:center;font-size:.92rem;color:var(--muted);transition:color .2s}
+.checklist li i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--court);font-style:normal;font-size:.75rem;transition:all .25s}
+.checklist li.ok{color:var(--ink)}.checklist li.ok i{background:var(--mint);color:#fff;transform:scale(1.1)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:90;background:var(--ink);color:#fff;border-radius:999px;padding:12px 20px;font-weight:700;box-shadow:0 20px 40px -20px #000a;max-width:calc(100% - 32px);text-align:center;animation:rise .3s ease both}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:95}
+
+/* hoja móvil del teléfono */
+.sheet-close{display:none;justify-self:center;border:0;background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-weight:800;font-size:.9rem}
+.phone-fab{display:none;position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:59;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 18px;background:var(--ink);color:#fff;font-weight:800;box-shadow:0 18px 30px -12px #10143399}
+.phone-fab.ping{animation:ping .7s cubic-bezier(.3,1.6,.5,1)}
+.phone-fab.ping::after{content:"";position:absolute;top:6px;right:8px;width:10px;height:10px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 3px var(--ink)}
+@keyframes ping{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+/* animaciones */
+@keyframes pop-in{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+@keyframes pick{0%{transform:scale(.97)}60%{transform:scale(1.015)}100%{transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes slide-in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@keyframes beat{0%,100%{transform:scale(1)}40%{transform:scale(1.45)}}
+@keyframes notif{0%{opacity:0;transform:translateY(-20px)}12%,80%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-12px)}}
+@keyframes chip{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
+.enter{animation:rise .5s ease both}
+
+/* responsive */
+@media (max-width:1060px){
+ .layout{grid-template-columns:1fr}
+ .side{position:relative;top:0;order:-1;grid-template-columns:minmax(0,260px) minmax(0,1fr);align-items:center}
+ .side .phone{width:100%}
+ .content{max-width:none}
+}
+@media (max-width:860px){
+ .side{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:60;order:0;grid-template-columns:1fr;background:#e9ebf2f5;backdrop-filter:blur(14px);padding:14px 16px 22px;border-radius:26px 26px 0 0;box-shadow:0 -24px 50px -20px #10143366;transform:translateY(105%);transition:transform .38s cubic-bezier(.2,.9,.3,1);max-height:90vh;overflow:auto;visibility:hidden}
+ .side.open{transform:none;visibility:visible}
+ .side .phone{width:min(70vw,280px)}
+ .sheet-close{display:block}
+ .phone-fab{display:flex}
+ #landing{grid-template-columns:1fr}
+ .hero-phone{max-width:300px;margin:0 auto;order:2}
+ .login{max-width:none}
+}
+@media (max-width:640px){
+ .side{grid-template-columns:1fr}
+ .side .phone{width:min(78%,280px)}
+ .terms,.creators{grid-template-columns:1fr}
+ .fstep{grid-template-columns:1fr 70px}.fstep .bar{grid-column:1/3;order:3}.fstep small{grid-column:1/3}
+ .topbar .course{display:none}
+ .chip span.nm{display:none}
+ .userbox{flex-direction:column}.userbox span{border-left:0;border-top:1px solid var(--line);padding:8px 16px}
+ .fc1,.fc3{display:none}.fc2{right:-2%}
+ .layout{padding-bottom:110px}
+ .block{border-radius:16px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style></head><body>
+<div id="landing">
+  <section class="hero-copy">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 15 L8 5 M9 15 L13 5 M14 15 L17 7.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg></span>Social Selling Lab</div>
+    <h1 class="hero-title display"><span>Del scroll</span><span class="l2">hasta la</span><span>compra</span></h1>
+    <p class="hero-lead">Únete al equipo de estrategia digital de una marca deportiva y descubre, en seis misiones, por qué alguien sigue a una marca, confía en quien la recomienda y termina comprando. Cada decisión que tomes se verá en vivo en el teléfono.</p>
+    <ul class="hero-facts"><li>Psicología del Consumidor · curso 3754</li><li>Casos de Adidas y situaciones simuladas</li><li>Nota de 0 a 5,0</li><li>Certificado en PDF</li><li>45 a 60 minutos</li></ul>
+    <form id="loginForm" class="login" autocomplete="on" novalidate>
+      <h2>Entra con tu usuario institucional</h2>
+      <p>Es lo que va antes de la @ en tu correo. Tu nombre aparecerá automáticamente.</p>
+      <label class="sr" for="userInput">Usuario institucional</label>
+      <div class="userbox"><input id="userInput" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Ej. jdbautistad" maxlength="90"><span>@academia.usbbog.edu.co</span></div>
+      <div id="who" class="who" aria-live="polite"></div>
+      <div id="loginErr" class="err" role="alert"></div>
+      <button class="btn primary" id="startBtn" type="submit" disabled>Comenzar el laboratorio</button>
+      <p class="disclaimer">Actividad académica independiente, no afiliada ni avalada por Adidas. Los casos reales se identifican como tales; las métricas y los perfiles de creadores son simulados.</p>
+    </form>
+  </section>
+  <div class="hero-phone" aria-hidden="true">
+    <div class="phone"><div class="screen" id="heroScreen"></div></div>
+    <div class="float-chip fc1"><i>+</i>Ana empezó a seguirte</div>
+    <div class="float-chip fc2"><i>♥</i>1.840 me gusta</div>
+    <div class="float-chip fc3"><i>✓</i>«La recomendó mi coach»</div>
+    <div class="float-chip fc4"><i>$</i>Compra confirmada</div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 15 L8 5 M9 15 L13 5 M14 15 L17 7.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg></span><span class="course">Social Selling Lab <small style="font-weight:600;color:var(--muted);font-stretch:100%">· Psicología del Consumidor</small></span></div>
+      <span class="chip"><span class="av" id="userAv"></span><span class="nm" id="userName"></span></span>
+      <span class="score-chip" id="scoreChip">0 / 100</span>
+    </div>
+    <nav class="rail" id="rail" aria-label="Misiones"></nav>
+  </header>
+  <div class="layout">
+    <main class="content" id="content" tabindex="-1"></main>
+    <aside class="side" id="side" aria-label="Vista en el teléfono e indicadores"><button type="button" class="sheet-close" onclick="toggleSheet(false)">Cerrar vista</button>
+      <div class="phone"><div class="screen" id="phoneScreen" aria-live="polite"></div></div>
+      <div class="panel" id="panel"></div>
+    </aside>
+  </div>
+  <button type="button" id="phoneFab" class="phone-fab" aria-controls="side" aria-expanded="false" onclick="toggleSheet()"><span aria-hidden="true">📱</span>Ver en el teléfono</button>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<script>
+// ================== CONTENIDO DEL LABORATORIO ==================
+// Cada misión: actividad interactiva (4 pts) + comprobación (4 pts) + decisión (6 pts) = 14 pts.
+// Reto final: 16 pts. Total: 100 pts. Nota = puntos ÷ 20.
+const METRICS=['Conexión','Confianza','Compra','Fidelización'];
+const MISSIONS=[
+{
+ stage:'Seguir', icon:'◎', title:'No vendes tenis: vendes identidad',
+ lead:'La gente no sigue un catálogo. Sigue historias en las que se reconoce.',
+ concept:{title:'Autoconcepto y congruencia',
+  text:'Las personas tienden a preferir marcas cuya imagen encaja con cómo se ven o con quién quieren llegar a ser. En social selling esto es el punto de partida: antes de vender, la marca tiene que ganarse un lugar en la conversación de una comunidad.',
+  terms:[['Atributo','Lo que el producto tiene: suela, peso, material.'],['Beneficio','Lo que el producto hace por ti: comodidad, rendimiento.'],['Identidad','Lo que el producto dice de ti: quién eres o quieres ser.']]},
+ caseReal:{kind:'Caso real',title:'Impossible Is Nothing',text:'Adidas ha usado «Impossible Is Nothing» como plataforma de comunicación centrada en historias de deportistas y personas que superan obstáculos. La campaña es real; el reto de esta misión es una simulación educativa.'},
+ mini:{type:'ladder',title:'Sube la escalera del mensaje',
+  help:'Mueve el control y mira cómo cambia la publicación. Luego clasifica tres mensajes.',
+  steps:[{k:'Atributo',cap:'Tenis con suela de 8 mm y malla transpirable. Disponibles en tallas 35 a 44.',likes:212,com:'¿Cuánto pesan?'},
+         {k:'Beneficio',cap:'Corre más cómodo desde el primer kilómetro, incluso en el asfalto de la ciudad.',likes:640,com:'¿Sirven para pista?'},
+         {k:'Identidad',cap:'Tu primera meta también cuenta. Cuéntanos cuál fue tu primer kilómetro.',likes:1840,com:'¡Yo empecé en el Simón Bolívar! 🏃‍♀️'}],
+  items:[['m1a','«Amortiguación que reduce el impacto en cada zancada».','Beneficio'],['m1b','«Corres por ti, no para nadie más».','Identidad'],['m1c','«Upper de punto con 30 % de material reciclado».','Atributo']]},
+ check:{q:'Un compañero dice: «Si conecto con identidad, ya no tengo que hablar del producto». ¿Qué le respondes?',
+  opts:[['Tiene razón: cuando hay identificación, la información técnica sobra.',0,'La identidad abre la conversación, pero al decidir la persona necesita información concreta: talla, precio, uso.'],
+        ['La identidad abre la conversación; para comprar, la persona también necesita información clara del producto.',1,'Exacto. La identidad atrae y retiene; los atributos y beneficios ayudan a decidir. Se complementan.'],
+        ['La identidad solo funciona si la campaña la protagoniza una celebridad.',0,'La identificación nace de verse reflejado. Una persona común con una historia cercana puede lograrla mejor que alguien famoso.']]},
+ decision:{title:'Campaña para jóvenes que empiezan a correr en Bogotá',text:'Tienes que elegir la idea central de la campaña de lanzamiento de unos tenis de entrenamiento.',
+  opts:[{t:'«Tu primera meta también cuenta»: historias de corredores principiantes de la ciudad, mostrando su progreso real.',pts:6,fx:[12,8,4,9],why:'Conectas con una aspiración alcanzable y con personas en las que tu público se reconoce. La identificación abre conversación y comunidad, aunque por sí sola no garantiza compras.',post:'Tu primera meta también cuenta. Ana pasó de 1 a 5 km en seis semanas. ¿Cuál es la tuya?'},
+        {t:'Una comparación técnica con la competencia: peso, amortiguación y precio, punto por punto.',pts:3,fx:[2,6,6,1],why:'La información técnica es útil, pero en esta etapa tu público aún no sabe por qué le debería importar. Funciona mejor más adelante, cuando ya están comparando para comprar.',post:'12 % más livianos y 18 % más amortiguación que el modelo anterior. Compara y decide.'},
+        {t:'Un atleta olímpico batiendo un récord, con el mensaje «Sé imparable».',pts:2,fx:[6,3,2,2],why:'Es inspirador, pero lejano para alguien que apenas empieza: puede admirar al atleta sin sentir que la historia es suya.',post:'Récord mundial. Ser imparable empieza aquí.'}]},
+ lesson:'La identidad abre la puerta; la información ayuda a cruzarla. Un buen mensaje empieza por la persona, no por la ficha técnica.'
+},
+{
+ stage:'Confiar', icon:'✓', title:'Seguidores no es lo mismo que influencia',
+ lead:'Una recomendación vale lo que vale la credibilidad de quien la hace.',
+ concept:{title:'Credibilidad de la fuente',
+  text:'Confiamos en quien recomienda según tres cosas: su experiencia en el tema, su honestidad percibida y qué tanto se parece a nosotros. Por eso el alcance (cuántos ven) no equivale a influencia (cuántos cambian de opinión). En Colombia, la Superintendencia de Industria y Comercio publicó una guía de buenas prácticas que recomienda declarar cuándo un contenido es publicidad.',
+  terms:[['Alcance','Cuántas personas ven un contenido.'],['Tasa de interacción','Interacciones ÷ seguidores × 100. Indica qué tanto responde la audiencia.'],['Afinidad','Qué tanto coincide la audiencia del creador con tu público.']]},
+ caseReal:{kind:'Situación simulada',title:'Tres perfiles para una comunidad runner',text:'Adidas colabora con atletas y figuras de la cultura popular. Los tres perfiles de esta misión son ficticios y sus cifras son inventadas para practicar.'},
+ mini:{type:'creators',title:'Calcula la tasa de interacción',
+  help:'Divide las interacciones promedio entre los seguidores y multiplica por 100. ¿Quién tiene la tasa más alta?',
+  creators:[{id:'val',name:'Valentina Ríos',role:'Actriz de televisión',av:'VR',fol:2400000,int:36000,bog:18,topic:'Entretenimiento y moda',disc:'A veces'},
+            {id:'and',name:'Coach Andrés',role:'Entrenador · Corre Bogotá',av:'CA',fol:18000,int:1620,bog:71,topic:'Rutinas para principiantes',disc:'Siempre'},
+            {id:'mau',name:'FitMauro',role:'Creador fitness',av:'FM',fol:310000,int:4650,bog:22,topic:'Gimnasio y suplementos',disc:'Casi nunca'}],
+  answer:'and'},
+ check:{q:'¿Qué hace más creíble una recomendación pagada?',
+  opts:[['Que el creador hable con entusiasmo de todos los productos que promociona.',0,'Si todo le parece perfecto, la audiencia deja de creerle: el entusiasmo sin matices resta credibilidad.'],
+        ['Que declare la colaboración y muestre un uso real del producto, con pros y contras.',1,'La transparencia y la experiencia real son las bases de la credibilidad. Declarar el pago no la destruye: ocultarlo sí.'],
+        ['Que el creador tenga más de un millón de seguidores.',0,'El tamaño da visibilidad, no credibilidad. Una audiencia grande pero ajena al tema escucha sin cambiar de opinión.']]},
+ decision:{title:'Presupuesto limitado: 4 millones de pesos',text:'Quieres que corredores principiantes de Bogotá prueben los tenis y hablen de ellos. ¿Cómo inviertes?',
+  opts:[{t:'Una sola publicación de Valentina Ríos, que consume todo el presupuesto.',pts:2,fx:[7,1,2,0],why:'Ganas visibilidad, pero solo el 18 % de su audiencia está en Bogotá y su tema no es correr. Mucha gente verá el post; pocos sentirán que es para ellos.',post:'¡Amo mis nuevos tenis! 💖 #ad'},
+        {t:'Coach Andrés y un reto de cuatro semanas con su comunidad, con la colaboración declarada.',pts:6,fx:[8,13,8,11],why:'Elegiste afinidad, experiencia y transparencia: una audiencia pequeña pero relevante, que además participa. Así se construye influencia real.',post:'#Publicidad Llevo tres semanas probando estos tenis en el reto Corre Bogotá. Lo bueno, lo mejorable y mi tiempo en 5K 👇'},
+        {t:'Repartirlo entre ocho microcreadores de fitness elegidos por su número de seguidores.',pts:3,fx:[5,4,4,3],why:'Diversificar es buena idea, pero elegir solo por seguidores ignora la afinidad: si su público no corre ni vive en Bogotá, el mensaje se diluye.',post:'Nuevo drop de tenis 🔥 link en bio'}]},
+ lesson:'Alcance, influencia y conversión son cosas distintas y se miden distinto. Busca afinidad y transparencia antes que seguidores.'
+},
+{
+ stage:'Sentir', icon:'♥', title:'Un reel no es una estrategia',
+ lead:'Captar la atención es el comienzo. Lo valioso es que la gente quiera participar.',
+ concept:{title:'Atención, emoción y participación',
+  text:'En el feed tienes uno o dos segundos para detener el pulgar. Un buen gancho capta la atención; la emoción la sostiene; una invitación clara convierte al espectador en participante. Y ojo: la interacción es una señal de interés, no una prueba de compra.',
+  terms:[['Gancho','La primera frase o imagen que detiene el scroll.'],['Llamado a la acción','Lo que le pides a la persona que haga después.'],['Contenido generado por usuarios','Fotos o videos que crean los clientes. Usarlos exige su permiso.']]},
+ caseReal:{kind:'Situación simulada',title:'Contenido para una comunidad urbana',text:'La comunicación de Adidas mezcla deporte, moda urbana y cultura. En esta simulación diseñas una pieza para Instagram o TikTok; los resultados son didácticos.'},
+ mini:{type:'builder',title:'Arma tu publicación',
+  help:'Elige formato, gancho y llamado a la acción. El teléfono te muestra cómo se vería.',
+  formats:[['reel','Reel'],['carrusel','Carrusel'],['historia','Historia con encuesta']],
+  hooks:[['h1','¿Cuál fue tu primer kilómetro?',2],['h2','Nueva colección disponible.',0],['h3','El error que casi todos cometen al empezar a correr.',2]],
+  ctas:[['c1','Comparte tu ruta con #MiPrimeraMeta.',2],['c2','Compra ya: unidades limitadas.',0],['c3','Guarda este post para tu próxima salida.',2]]},
+ check:{q:'Tu reel tuvo 48.000 reproducciones, 2.100 me gusta y 35 ventas atribuidas. ¿Qué conclusión es correcta?',
+  opts:[['Fue un éxito de ventas: 48.000 personas vieron el producto.',0,'Ver no es comprar. Las reproducciones miden atención potencial, no decisiones de compra.'],
+        ['Captó atención; para hablar de ventas hay que comparar las 35 compras con las visitas que llegaron a la tienda.',1,'Correcto. Cada métrica responde una pregunta distinta: las reproducciones hablan de atención; la conversión, de ventas.'],
+        ['Fracasó, porque solo el 4 % de quienes lo vieron le dio me gusta.',0,'Una tasa de me gusta del 4 % no es mala en sí misma, y además los me gusta no miden ventas.']]},
+ decision:{title:'Una clienta publicó un video increíble con tus tenis',text:'Etiquetó a la marca y el video se está compartiendo mucho. ¿Cómo lo aprovechas?',
+  opts:[{t:'Le escribes para pedirle permiso, acuerdas cómo se le dará crédito y dónde se usará, y luego lo compartes.',pts:6,fx:[10,10,4,8],why:'El contenido de los clientes es poderoso porque es auténtico, y sigue siendo de quien lo creó. Pedir permiso protege su confianza y la de toda la comunidad.',post:'Gracias, @lau.corre, por dejarnos compartir tu primer 10K 🙌 (compartido con su autorización)'},
+        {t:'Lo compartes de inmediato desde la cuenta de la marca, dándole crédito con una mención.',pts:3,fx:[8,1,3,2],why:'Dar crédito es correcto, pero no es lo mismo que tener permiso. Usar el contenido sin preguntar puede molestar a la autora y generar críticas.',post:'Mira este video de @lau.corre 🔥'},
+        {t:'Lo usas en un anuncio pagado, porque al etiquetar a la marca ya aceptó que lo usen.',pts:1,fx:[4,-10,3,-6],why:'Etiquetar a una marca no es autorizar un uso comercial. Ponerlo en un anuncio sin permiso puede violar sus derechos y dañar la confianza.',post:'ANUNCIO · Corre como @lau.corre. Compra ahora.'}]},
+ lesson:'El engagement es una señal de interés, no una venta. Y el contenido de tu comunidad se usa con permiso, no por defecto.'
+},
+{
+ stage:'Pertenecer', icon:'✦', title:'La comunidad no se compra',
+ lead:'Cuando dudamos, miramos a otros parecidos a nosotros. Esa evidencia tiene que ser real.',
+ concept:{title:'Prueba social y pertenencia',
+  text:'Ante la incertidumbre usamos el comportamiento de otras personas como información: si alguien como yo lo usa y le funciona, probablemente me sirva. La pertenencia va más allá: es sentirse parte de un grupo con el que se comparte algo. Ninguna de las dos se puede inventar sin destruir la confianza.',
+  terms:[['Prueba social','Usar lo que otros hacen o dicen como guía para decidir.'],['Pertenencia','Sentirse parte de un grupo con valores o actividades en común.'],['Fidelización','Razones para volver, recomendar y participar de nuevo.']]},
+ caseReal:{kind:'Caso real',title:'adiClub y la comunidad',text:'Adidas tiene un programa de membresía, adiClub, que ofrece beneficios y experiencias. El reto de esta misión es un escenario ficticio de una comunidad local.'},
+ mini:{type:'sort',title:'¿Prueba social real o engañosa?',
+  help:'Clasifica cada señal. Cada error resta un acierto.',
+  items:[['s1','Reseñas de compradores verificados, con fotos, que también incluyen críticas.','real'],
+         ['s2','«+10.000 vendidos» sin indicar fuente ni periodo.','fake'],
+         ['s3','El video de una corredora del club, compartido con su permiso.','real'],
+         ['s4','Un contador de «37 personas están viendo esto» que no corresponde a datos reales.','fake'],
+         ['s5','Mostrar solo las reseñas de cinco estrellas y ocultar las negativas.','fake'],
+         ['s6','Una embajadora que declara #Publicidad y cuenta pros y contras.','real']]},
+ check:{q:'¿Por qué funciona la prueba social?',
+  opts:[['Porque las personas copian todo lo que ven en redes.',0,'No copiamos todo: la prueba social pesa más cuando dudamos y cuando quien la muestra se parece a nosotros.'],
+        ['Porque, ante la incertidumbre, usamos lo que hacen personas parecidas como información para decidir.',1,'Exacto. Por eso las reseñas de alguien como tú pesan más que un número gigante sin contexto.'],
+        ['Porque los números grandes siempre generan confianza.',0,'Un número sin fuente puede generar sospecha. La evidencia verificable y cercana convence más.']]},
+ decision:{title:'La comunidad se apaga después de la primera compra',text:'Quienes compraron casi no vuelven a interactuar. ¿Qué haces para que regresen?',
+  opts:[{t:'Organizas entrenamientos mensuales gratuitos y un espacio para compartir avances, reconociendo la constancia, no solo las compras.',pts:6,fx:[10,9,4,15],why:'Creas razones para volver que no dependen de comprar: experiencias compartidas, reconocimiento y relaciones entre los miembros. Eso es pertenencia.',post:'Domingo 7 a. m., Parque Simón Bolívar. Entreno abierto y café al final ☕ ¿Quién viene?'},
+        {t:'Lanzas un programa de puntos: cada compra suma puntos canjeables por descuentos.',pts:3,fx:[2,3,8,6],why:'Los puntos pueden motivar la recompra, pero la relación sigue siendo solo transaccional. Si otra marca da más descuento, no hay nada que retenga a la persona.',post:'Cada compra suma. Acumula puntos y canjéalos por descuentos 💸'},
+        {t:'Creas un grupo de WhatsApp para enviar promociones todos los días.',pts:1,fx:[-2,-6,3,-8],why:'Los mensajes diarios sin valor cansan y la gente se sale. Una comunidad necesita conversación, no solo anuncios.',post:'🔥 Promo del día 🔥 Solo hoy 20 % OFF'}]},
+ lesson:'La prueba social útil es verificable, y la comunidad se cultiva con experiencias y relaciones, no con presión ni números inventados.'
+},
+{
+ stage:'Comprar', icon:'⇢', title:'Del like a la compra',
+ lead:'Entre ver una publicación y pagar hay varios pasos. En cada uno se pierde gente.',
+ concept:{title:'Social commerce y fricción',
+  text:'El recorrido va del alcance al clic, del clic a la ficha del producto, de ahí al carrito y finalmente al pago. La fricción es todo lo que hace difícil avanzar: costos sorpresa, formularios largos, pocos medios de pago. Quitar fricción ayuda a quien ya quiere comprar; presionar con falsa urgencia, no.',
+  terms:[['Tasa de clics','Clics ÷ personas alcanzadas × 100.'],['Tasa de conversión','Compras ÷ visitas a la tienda × 100.'],['Abandono de carrito','Personas que agregan productos y no pagan.']]},
+ caseReal:{kind:'Caso real',title:'CONFIRMED y los lanzamientos',text:'CONFIRMED es una aplicación de Adidas asociada a lanzamientos de producto. Aquí diseñas un recorrido hipotético inspirado en esa idea; no representa su funcionamiento exacto.'},
+ mini:{type:'funnel',title:'Encuentra la fuga del embudo',
+  help:'Datos de una campaña simulada. Fíjate en el porcentaje que avanza de un paso al siguiente y toca el paso donde se pierde la mayor proporción de personas que ya mostraban intención de comprar.',
+  steps:[['Alcance',50000],['Clics',1500],['Ficha del producto',1200],['Carrito',300],['Compras',24]],
+  answer:4,
+  fixes:[['f1','Mostrar envío y devoluciones antes del pago',1.6],['f2','Agregar pago con PSE y Nequi',1.5],['f3','Permitir comprar sin crear cuenta',1.4]]},
+ check:{q:'¿Qué métrica refleja una compra completada?',
+  opts:[['Los clics en el enlace de la publicación.',0,'Un clic muestra interés, pero muchas personas hacen clic y no compran.'],
+        ['Los productos agregados al carrito.',0,'Agregar al carrito es una intención fuerte, pero en el ejemplo, el 92 % de esas personas no pagó.'],
+        ['Los pedidos pagados.',1,'Correcto. La venta ocurre cuando el pago se confirma; todo lo anterior son pasos del recorrido.']]},
+ decision:{title:'Lanzamiento de una edición especial',text:'¿Qué recorrido diseñas desde la publicación hasta la compra?',
+  opts:[{t:'Reel → ficha con tallas, precio total con envío y devoluciones → pago seguro, con recordatorio para quien lo pida.',pts:6,fx:[4,12,15,9],why:'Quien quiere comprar encuentra toda la información antes de pagar y nada lo sorprende. Mides compras reales, no solo clics.',post:'Edición especial disponible el viernes. Precio final, tallas y devoluciones en el enlace. ¿Te avisamos?'},
+        {t:'Reel con una cuenta regresiva real hasta el lanzamiento y un enlace directo al pago para aprovechar la emoción.',pts:3,fx:[7,2,8,2],why:'La cuenta regresiva es honesta y genera expectativa, pero mandar directo al pago, sin ficha ni condiciones, aumenta los abandonos y las devoluciones.',post:'⏳ 02:14:36 para el lanzamiento. Link directo al pago 👇'},
+        {t:'Mensaje automático a quien comente, con un enlace y un descuento que vence en una hora.',pts:2,fx:[1,-6,6,-4],why:'Puede generar algunas ventas rápidas, pero el mensaje no solicitado y la presión de tiempo hacen que muchos se sientan manipulados.',post:'¡Comenta «QUIERO» y te enviamos un descuento que vence en 1 hora! ⏰'}]},
+ lesson:'Conversión es una acción definida y medible. Quitar fricción facilita decisiones libres; presionar las fuerza y se paga en confianza.'
+},
+{
+ stage:'Defender', icon:'⚑', title:'La confianza es el activo',
+ lead:'Una crisis no se apaga borrando comentarios. Se atiende.',
+ concept:{title:'Disonancia, expectativas y confianza',
+  text:'Cuando lo que la marca prometió no coincide con lo que la gente vive, aparece una brecha que se nota en los comentarios. Responder rápido, reconocer lo que pasó y corregir es más sostenible que ocultar. La confianza se construye lento y se pierde rápido.',
+  terms:[['Disonancia','Incomodidad cuando lo que se esperaba no coincide con lo que se vive.'],['Transparencia','Decir con claridad qué pasó y qué relación comercial existe.'],['Escucha social','Monitorear lo que se dice de la marca para responder a tiempo.']]},
+ caseReal:{kind:'Situación ficticia',title:'La reseña cuestionada',text:'Caso completamente inventado: un creador promociona unos tenis y su comunidad sospecha que la reseña fue pagada sin avisarlo. No se refiere a ningún incidente real de Adidas.'},
+ mini:{type:'order',title:'Ordena el plan de respuesta',
+  help:'Toca los pasos en el orden en que los harías.',
+  steps:[['o1','Escuchar y verificar qué pasó'],['o2','Reconocer públicamente la situación'],['o3','Corregir: etiquetar como publicidad y aclarar'],['o4','Hacer seguimiento y responder dudas']]},
+ check:{q:'El creador no declaró que su reseña era pagada. ¿Qué principio se rompió?',
+  opts:[['Transparencia: la audiencia tiene derecho a saber que existe una relación comercial.',1,'Correcto. Ocultar el pago hace que la audiencia evalúe la reseña como si fuera espontánea: eso es engañoso.'],
+        ['Exclusividad: el creador no debería trabajar con varias marcas.',0,'Trabajar con varias marcas no es el problema; el problema es no decir cuándo un contenido es publicidad.'],
+        ['Consistencia visual: la publicación no seguía la línea gráfica de la marca.',0,'La estética no tiene que ver con la crisis: lo que molestó a la comunidad fue sentirse engañada.']]},
+ decision:{title:'La conversación crece en los comentarios',text:'Cientos de personas preguntan si la reseña era pagada. ¿Qué plan propones?',
+  opts:[{t:'Responder en la publicación: confirmar la colaboración, pedir al creador que la etiquete como publicidad y contestar dudas con datos.',pts:6,fx:[3,18,4,16],why:'Reconoces, corriges y das la cara donde está la conversación. Eso no borra la molestia, pero demuestra que la marca respeta a su comunidad.',post:'Tienen razón: la reseña era una colaboración pagada y debió decirse. Ya está etiquetada. Aquí respondemos sus preguntas 👇'},
+        {t:'Publicar un comunicado general en la cuenta de la marca y desactivar los comentarios de ese post mientras pasa la polémica.',pts:2,fx:[-2,-3,-1,-4],why:'El comunicado es un paso, pero cerrar los comentarios se percibe como querer callar a la comunidad, y la conversación se va a otro lado.',post:'Comunicado oficial. Los comentarios de esta publicación se han desactivado.'},
+        {t:'Pedir al creador que borre el video y no hacer comentarios para no amplificar el tema.',pts:1,fx:[-6,-14,-5,-12],why:'El silencio y el borrado suelen leerse como admisión de culpa sin responsabilidad. Las capturas ya circulan.',post:'(El video ya no está disponible)'}]},
+ lesson:'La confianza es acumulativa y frágil. La transparencia no es un costo de la estrategia: es parte de ella.'
+}];
+// Reto final: transferencia a un negocio propio
+const FINAL_FIELDS=[
+ ['business','Tu negocio y qué vende','Ej. tienda de accesorios para mascotas hechos a mano'],
+ ['audience','La comunidad que quieres conectar','Sus intereses, hábitos y lo que les preocupa, sin estereotipos'],
+ ['content','Qué publicarías y en qué red','Formato, mensaje, red social y por qué'],
+ ['journey','Cómo llevarías la interacción a la compra','El recorrido desde el contenido hasta el pago, sin presionar'],
+ ['measure','Cómo medirías resultados y cuidarías la confianza','Métricas de compra, transparencia, permisos, reseñas reales']];
+const MECHS=['Identidad','Credibilidad de la fuente','Emoción y participación','Prueba social y pertenencia','Reducción de fricción','Transparencia'];
+
+// Curso 3754 · Psicología del Consumidor (usuario = lo que va antes de la @).
+const ROSTER={"jdbautistad":["Jhonatan Daniel","Bautista Diaz"],"mabayonaf":["Martin Alonso","Bayona Forero"],"jabeltranc":["Jhon Alexander","Beltran Contreras"],"ldbustosp":["Luna Dayanna","Bustos Puerto"],"dacarrenos":["Daniel Alejandro","Carreño Salguero"],"dacubidesa":["David Alejandro","Cubides Aparicio"],"dadiazc2":["Danna Alejandra","Diaz Clavijo"],"caduartef1":["Carlos Andrés","Duarte Fajardo"],"jpescobarv":["Juan Pablo","Escobar Vargas"],"fdgaleanoa":["Fredy Daniel","Galeano Ariza"],"jpgonzalezc4":["Juan Pablo","Gonzalez Contreras"],"jshernandezc3":["Juan Sebastian","Hernandez"],"yalopezv":["Yuli Alexandra","Lopez Vela"],"jlmartineza1":["Jose Luis","Martinez Acevedo"],"samendozan1":["Santiago Alejandro","Mendoza Narvaez"],"dspinzonl":["Daniel Santiago","Pinzon Lopez"],"aramirezs2":["Alejandro Ramirez","Ramirez Solano"],"dszambranoc":["David Santiago","Zambrano Cardona"]};
+
+'use strict';
+// ================== CONFIGURACIÓN ==================
+const KEY='social-selling-lab-v1';
+const PASS_NOTA=4.0;                 // nota mínima para certificado de aprobación
+const TRACK_URL='https://script.google.com/macros/s/AKfycbwrDZ27CTfmFIJz2j0CKNi33Xqrhw7AwJkr_xLAHEpR3oMud7Iv734_8K6q427JnQ/exec';                  // URL /exec del Apps Script (vacía = sin seguimiento)
+const TRACK_TOKEN='ssl-2026';
+// ================== UTILIDADES ==================
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Number(n).toLocaleString('es-CO');
+const dec1=n=>Number(n).toLocaleString('es-CO',{minimumFractionDigits:1,maximumFractionDigits:1});
+const notaOf=pts=>Math.round(pts/2)/10;
+const reduce=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const normUser=v=>String(v||'').trim().toLowerCase().split('@')[0].replace(/\s+/g,'');
+function hash(str){let h=2166136261;for(const c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function order(n,seed){const a=[...Array(n).keys()];let x=hash(seed)||1;for(let i=n-1;i>0;i--){x=(Math.imul(x,1103515245)+12345)>>>0;const j=x%(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.remove('hidden');t.style.animation='none';void t.offsetWidth;t.style.animation='';clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add('hidden'),3600)}
+function quality(t){t=String(t||'').trim();const w=t.toLowerCase().match(/[a-záéíóúñü0-9]+/gi)||[];return {len:t.length,words:w.length,ok:t.length>=40&&w.length>=7&&new Set(w).size>=5&&!/(.)\1{4,}/.test(t)}}
+
+// ================== ESTADO ==================
+let S=null,lastFocus=null,entering=true,prevMetrics=null,lastPhone='';
+const blankAttempt=()=>({m:Array.from({length:6},()=>({mini:{},check:null,dec:null,reason:'',done:false,score:null})),final:{fields:{},mech:'',mechWhy:'',done:false,score:null},metrics:[50,50,50,50]});
+function save(){if(!S)return;try{localStorage.setItem(KEY+':'+S.user,JSON.stringify(S))}catch(e){}}
+function load(u){try{const s=JSON.parse(localStorage.getItem(KEY+':'+u));if(s&&s.cur&&Array.isArray(s.cur.m))return s}catch(e){}return null}
+const fullName=()=>S?S.name+' '+S.last:'';
+const cur=()=>S.cur;
+const doneCount=()=>cur().m.filter(x=>x.done).length;
+const attemptPts=()=>cur().m.reduce((a,x)=>a+(x.score?x.score.total:0),0)+(cur().final.score?cur().final.score.total:0);
+const avgNota=()=>S.history.length?Math.round(S.history.reduce((a,h)=>a+h.nota,0)/S.history.length*10)/10:null;
+const unlocked=k=>k===0||(typeof k==='number'&&cur().m[k-1].done)||(k==='final'&&doneCount()===6)||(k==='result'&&S.history.length>0);
+
+// ================== INGRESO ==================
+let found=null;
+function lookup(){const u=normUser($('userInput').value),who=$('who');$('loginErr').textContent='';found=ROSTER[u]?u:null;$('startBtn').disabled=!found;
+ if(found){const [n,l]=ROSTER[u];const prev=load(u);const info=prev?(prev.history.length?`Llevas ${prev.history.length} intento${prev.history.length>1?'s':''} completo${prev.history.length>1?'s':''}. Promedio actual: ${dec1(prev.history.reduce((a,h)=>a+h.nota,0)/prev.history.length)}.`:`Tienes progreso guardado: ${prev.cur.m.filter(x=>x.done).length} de 6 misiones.`):'¿Eres tú? Pulsa «Comenzar el laboratorio».';
+  who.className='who ok';who.innerHTML=`<span class="av" aria-hidden="true">${esc(n[0]+(l[0]||''))}</span><div><strong>Hola, ${esc(n+' '+l)}</strong><small>${esc(info)}</small></div>`}
+ else if(u.length>=3){who.className='who no';who.innerHTML=`<span class="av" aria-hidden="true">?</span><div><strong>No encontramos «${esc(u)}» en la lista del curso</strong><small>Escribe solo lo que va antes de la @. Si el problema sigue, avísale a tu docente.</small></div>`}
+ else{who.className='who';who.innerHTML=''}}
+$('userInput').addEventListener('input',lookup);
+$('loginForm').addEventListener('submit',e=>{e.preventDefault();lookup();if(!found){$('loginErr').textContent='Escribe un usuario institucional válido del curso.';$('userInput').focus();return}
+ const [n,l]=ROSTER[found];S=load(found)||{user:found,name:n,last:l,folio:'SSL-'+new Date().getFullYear()+'-'+Math.random().toString(36).slice(2,8).toUpperCase(),created:new Date().toISOString(),attemptNo:1,history:[],cur:blankAttempt(),screen:0};
+ S.name=n;S.last=l;try{localStorage.setItem(KEY+':ultimo',found)}catch(err){}save();
+ $('landing').classList.add('hidden');$('app').classList.remove('hidden');stopHero();track('ingreso');go(S.screen??0)});
+
+// ================== NAVEGACIÓN ==================
+function go(k){if(!unlocked(k)){toast(k==='final'?'Completa las seis misiones para llegar al reto final.':'Completa primero la misión anterior.');return}S.screen=k;save();entering=true;lastFocus=null;render();window.scrollTo({top:0,behavior:reduce()?'auto':'smooth'})}
+function renderRail(){const items=MISSIONS.map((m,i)=>({k:i,label:m.stage,icon:cur().m[i].done?'✓':i+1,done:cur().m[i].done}));items.push({k:'final',label:'Tu marca',icon:cur().final.done?'✓':'★',done:cur().final.done});if(S.history.length)items.push({k:'result',label:'Resultado',icon:'◆',done:false});
+ $('rail').innerHTML=items.map(it=>`<button class="stage ${it.done?'done':''} ${S.screen===it.k?'now':''}" ${unlocked(it.k)?'':'disabled'} ${S.screen===it.k?'aria-current="step"':''} onclick="go(${typeof it.k==='number'?it.k:`'${it.k}'`})"><span class="dot">${it.icon}</span>${it.label}</button>`).join('');
+ const nowBtn=$('rail').querySelector('.now');if(nowBtn&&nowBtn.scrollIntoView)nowBtn.scrollIntoView({block:'nearest',inline:'center'})}
+function render(){$('userAv').textContent=(S.name[0]+(S.last[0]||'')).toUpperCase();$('userName').textContent=fullName();
+ const avg=avgNota();$('scoreChip').textContent=S.screen==='result'&&avg!=null?`Nota ${dec1(avg)}`:`Intento ${S.attemptNo} · ${attemptPts()} / 100`;
+ renderRail();const c=$('content');const y=window.scrollY;
+ c.innerHTML=typeof S.screen==='number'?missionView(S.screen):S.screen==='final'?finalView():resultView();
+ if(entering){c.querySelectorAll('.block,.mhead,.result,.final-hero').forEach((el,i)=>{el.classList.add('enter');el.style.animationDelay=Math.min(i,5)*60+'ms'});c.focus({preventScroll:true})}
+ else{window.scrollTo({top:y,behavior:'instant'});if(lastFocus){const b=[...c.querySelectorAll('[data-k]')].find(x=>x.dataset.k===lastFocus);if(b){b.focus({preventScroll:true});b.classList.add('just')}}}
+ renderPhone();renderPanel();entering=false}
+function act(key,fn){lastFocus=key;fn();save();render()}
+
+// ================== TELÉFONO ==================
+function postHTML(p){return `<div class="post-head"><div class="post-av"><span>${esc(p.av||'SL')}</span></div><div><b>${esc(p.handle||'socialab.run')}</b><small>${esc(p.sub||'Patrocinado por la marca')}</small></div></div>
+<div class="media ${p.fmt||''}" style="background:${p.bg||'var(--cobalt)'}"><div class="art"><i></i><i></i><i></i></div><span class="shoe">${p.emoji||'👟'}</span>${p.badge?`<span class="fmt">${esc(p.badge)}</span>`:''}${p.poll?`<div class="poll">${esc(p.poll)}<div><span>Sí 🙌</span><span>Aún no</span></div></div>`:''}${p.tag?`<div class="tagline">${esc(p.tag)}</div>`:''}</div>
+<div class="actions"><span class="heart" data-likes="${p.likes||0}">♥</span><span>💬</span><span>↗</span><span style="margin-left:auto">🔖</span></div>
+<div class="likes"><span class="lk" data-to="${p.likes||0}">${fmt(p.likes||0)}</span> me gusta</div>
+<div class="caption"><b>${esc(p.handle||'socialab.run')}</b>${esc(p.caption||'')}</div>
+<div class="comments">${(p.comments||[]).map(([w,t,cls],k)=>`<div class="cm ${cls||''}" style="animation-delay:${k*180}ms"><span class="ca">${esc(w.slice(0,2).toUpperCase())}</span><div><b>${esc(w)}</b> ${esc(t)}</div></div>`).join('')}</div>`}
+function appTop(t){return `<div class="app-top"><b>${esc(t)}</b><i>⋯</i></div>`}
+function phoneFor(k){
+ if(k==='final'){const f=cur().final.fields;const biz=(f.business||'Tu negocio').split(/[,.]/)[0].slice(0,40);return appTop('Tu marca')+`<div class="feed">${postHTML({handle:biz.toLowerCase().replace(/[^a-z0-9áéíóúñ]+/gi,'.').replace(/^\.|\.$/g,'').slice(0,22)||'tu.marca',av:biz.slice(0,2).toUpperCase(),sub:cur().final.mech?'Estrategia: '+cur().final.mech:'Tu estrategia',bg:'var(--ink)',emoji:'🛍️',tag:biz,likes:(f.content||'').length*7,caption:' '+(f.content||'Describe qué publicarías y aquí verás tu post.').slice(0,150),comments:f.journey?[['Cliente','¿Cómo compro?'],[biz.slice(0,14)||'Marca',(f.journey||'').slice(0,90),'brand']]:[]})}</div>`}
+ if(k==='result'){const a=avgNota();return appTop('Notificaciones')+`<div class="feed"><div class="profile"><div class="pav">${esc((S.name[0]+S.last[0]).toUpperCase())}</div><b>${esc(fullName())}</b><div class="pstats"><div><b>${S.history.length}</b>intentos</div><div><b>${a!=null?dec1(a):'—'}</b>nota</div><div><b>6/6</b>misiones</div></div></div><div class="comments" style="padding:0 14px">${[['Coach Andrés','¡Eso es estrategia! 👏'],['Lau','Me salvaste el parcial 😅'],['Social Lab','Tu certificado está listo','brand']].map(([w,t,c],i)=>`<div class="cm ${c||''}" style="animation-delay:${i*200}ms"><span class="ca">${esc(w.slice(0,2).toUpperCase())}</span><div><b>${esc(w)}</b> ${esc(t)}</div></div>`).join('')}</div></div>`}
+ const M=MISSIONS[k],d=cur().m[k],dec=d.dec!=null?M.decision.opts[d.dec]:null;
+ if(k===0){const lvl=Number(d.mini.lvl||0),st=M.mini.steps[lvl];return appTop('Inicio')+`<div class="feed">${postHTML({tag:dec?'':['Suela 8 mm','Corre más cómodo','Tu primera meta'][lvl],likes:dec?[0,0,700,1100,0,0,2600][dec.pts]:st.likes,caption:' '+(dec?dec.post:st.cap),comments:dec?(dec.pts===6?[['ana.corre','¡Esa soy yo hace 2 meses! 🥹'],['juanes','¿Dónde es el entreno?']]:dec.pts===3?[['pipe_k','¿Y en tallas grandes?']]:[['dani','Qué crack… pero yo apenas camino 😅']]):[['lector',st.com]]})}</div>`}
+ if(k===1){const cr=M.mini.creators.find(c=>c.id===d.mini.pick);if(dec){const by=[null,'val','and','mau'];const c2=M.mini.creators.find(c=>c.id===({2:'val',6:'and',3:'mau'})[dec.pts])||M.mini.creators[1];return appTop('Inicio')+`<div class="feed">${postHTML({handle:dec.pts===3?'microcreadores (8)':c2.name.toLowerCase().replace(/\s+/g,'.'),av:dec.pts===3?'8+':c2.av,sub:dec.pts===6?'Colaboración pagada con la marca':dec.pts===3?'Publicaciones patrocinadas':'Publicidad',bg:dec.pts===6?'#0f7a5c':'#6b3cff',likes:dec.pts===6?1950:dec.pts===2?36000:4100,caption:' '+dec.post,comments:dec.pts===6?[['runner.bog','Probé el reto, ¡bajé 2 min en 5K!'],['caro','Gracias por decir que es pagado 🙌']]:dec.pts===2?[['fan_val','Reina 😍'],['mateo','¿Valentina corre? 🤔']]:[['user8821','🔥🔥'],['luz','¿Es publicidad?']]})}</div>`}
+  if(!cr)return appTop('Buscar')+`<div class="feed"><div class="profile"><b>Elige un perfil</b><p class="help" style="font-size:12px;margin-top:6px">Toca una de las tarjetas de creadores y verás su perfil aquí.</p>${M.mini.creators.map(c=>`<div class="cm"><span class="ca">${c.av}</span><div><b>${esc(c.name)}</b> ${fmt(c.fol)} seguidores</div></div>`).join('')}</div></div>`;
+  const er=cr.int/cr.fol*100;return appTop(cr.name)+`<div class="feed"><div class="profile"><div class="pav">${cr.av}</div><b>${esc(cr.name)}</b><div style="color:var(--muted);font-size:11.5px">${esc(cr.role)}</div><div class="pstats"><div><b>${fmt(cr.fol)}</b>seguidores</div><div><b>${fmt(cr.int)}</b>interacciones</div><div><b>${cr.bog} %</b>en Bogotá</div></div><div style="font-size:11.5px">Temas: ${esc(cr.topic)}</div><div style="font-size:11.5px;margin-top:4px">Declara publicidad: <b>${esc(cr.disc)}</b></div>${d.done?`<div style="font-size:11.5px;margin-top:8px">Tasa de interacción: <b>${er.toLocaleString('es-CO',{maximumFractionDigits:1})} %</b></div><div class="erbar"><i style="width:${Math.min(100,er*10)}%"></i></div>`:''}</div></div>`}
+ if(k===2){const f=d.mini.fmt,h=M.mini.hooks.find(x=>x[0]===d.mini.hook),c=M.mini.ctas.find(x=>x[0]===d.mini.cta);const q=(h?h[2]:0)+(c?c[2]:0);
+  if(dec)return appTop('Inicio')+`<div class="feed">${postHTML({sub:'Publicación de la marca',bg:'#111a4d',emoji:'🎥',badge:'Reel',likes:[0,600,0,1400,0,0,3100][dec.pts],caption:' '+dec.post,comments:dec.pts===6?[['lau.corre','¡Qué emoción verme aquí! 💙'],['sofi','Yo también quiero salir 🙋‍♀️']]:dec.pts===3?[['lau.corre','Nadie me preguntó 😐']]:[['lau.corre','¿Por qué usan mi video en un anuncio?','angry'],['tomas','Eso no se hace 👎','angry']]})}</div>`;
+  return appTop('Vista previa')+`<div class="feed">${postHTML({sub:'Borrador',fmt:f==='carrusel'?'carrusel':f==='historia'?'historia':'',badge:f==='reel'?'Reel · 0:15':f==='carrusel'?'1/5':f==='historia'?'Historia':'',poll:f==='historia'&&h?h[1]:'',tag:h&&f!=='historia'?h[1]:(f?'':'Elige formato, gancho y llamado'),likes:f&&h&&c?[380,0,900,0,2300][q]:0,caption:' '+[h?h[1]:'',c?c[1]:''].join(' ').trim(),comments:c?(c[0]==='c1'?[['mile','Mi ruta: Usaquén → Parque 93 🏃‍♀️ #MiPrimeraMeta']]:c[0]==='c3'?[['nico','Guardado ✅ el sábado lo intento']]:[['andrea','¿Y cuánto cuestan? Nada de presión 🙄','angry']]):[]})}</div>`}
+ if(k===3){const real=M.mini.items.filter(([id,,a])=>d.mini[id]==='real').length;if(dec)return appTop('Comunidad')+`<div class="feed">${postHTML({sub:'Comunidad runner',bg:dec.pts===6?'#0f7a5c':'#3a3f63',emoji:dec.pts===6?'🏃‍♀️':dec.pts===3?'🎟️':'📣',likes:[0,40,0,500,0,0,1200][dec.pts],caption:' '+dec.post,comments:dec.pts===6?[['ana.corre','¡Allá nos vemos! Llevo a mi hermana'],['coach.andres','Yo dirijo el calentamiento 💪','brand']]:dec.pts===3?[['pipe_k','¿Los puntos vencen?']]:[['juli','Silencié el grupo 🙃','angry']]})}</div>`;
+  return appTop('Reseñas')+`<div class="feed"><div class="shop"><div class="prod"><span>👟</span><div><b>Tenis Runner 1</b><div style="font-size:11px;color:var(--muted)">★ 4,6 · 128 reseñas verificadas</div></div></div>${M.mini.items.filter(([id])=>d.mini[id]).map(([id,t,a])=>`<div class="cm"><span class="ca" style="background:${d.mini[id]==='real'?'var(--mint)':'var(--pink)'}">${d.mini[id]==='real'?'✓':'!'}</span><div style="font-size:11.5px">${esc(t)}</div></div>`).join('')||'<p class="help" style="font-size:12px">Clasifica las señales y aparecerán aquí.</p>'}</div></div>`}
+ if(k===4){const st=M.mini.steps;const mult=M.mini.fixes.reduce((a,[id,,m])=>a*(d.mini[id]?m:1),1);const buys=Math.round(st[4][1]*mult);const fx=id=>!!d.mini[id];
+  return appTop('Tienda')+`<div class="feed"><div class="shop"><div class="prod"><span>👟</span><div><b>Edición especial</b><div style="font-size:11px;color:var(--muted)">Talla 38 · Azul cobalto</div></div></div><div class="row"><span>Precio</span><b>$ 459.900</b></div><div class="row"><span>Envío</span><b class="${fx('f1')?'ok':'warn'}">${fx('f1')?'$ 12.000 · 3 días':'Se calcula al pagar'}</b></div><div class="row"><span>Devoluciones</span><b class="${fx('f1')?'ok':'warn'}">${fx('f1')?'30 días':'No informado'}</b></div><div class="row"><span>Pago</span><b class="${fx('f2')?'ok':'warn'}">${fx('f2')?'Tarjeta · PSE · Nequi':'Solo tarjeta'}</b></div><div class="row"><span>Cuenta</span><b class="${fx('f3')?'ok':'warn'}">${fx('f3')?'Compra como invitado':'Registro obligatorio'}</b></div><div class="pay">Pagar</div><div class="mini-funnel">${st.map(([n,v],i)=>{const val=i===4?buys:v;return `<div><span>${n}</span><b>${fmt(val)}</b></div><i style="width:${Math.max(2,Math.sqrt(val/st[0][1])*100).toFixed(1)}%"></i>`}).join('')}</div></div></div>`}
+ if(k===5){const seq=d.mini.seq||[];const base=[['runner.bog','¿Esto era pagado? 🤨','angry'],['caro','Ya no sé a quién creerle','angry'],['mateo','Exijo que lo digan','angry']];const brand=dec?(dec.pts===6?[['Marca','Tienen razón: era una colaboración pagada y debió decirse. Ya está etiquetada. Respondemos sus dudas aquí 👇','brand'],['caro','Gracias por reconocerlo 👏']]:dec.pts===2?[['Sistema','Los comentarios se han desactivado.','brand'],['mateo','Me lo esperaba… lo están comentando en otro post','angry']]:[['Sistema','Este video ya no está disponible.','brand'],['runner.bog','Lo borraron, pero ya tengo captura 📸','angry']]):seq.length?[['Marca',`Plan en marcha: ${seq.length} de 4 pasos definidos…`,'brand']]:[];
+  return appTop('Comentarios')+`<div class="feed">${postHTML({handle:'fitmauro',av:'FM',sub:'Reseña · hace 2 h',bg:'#3a3f63',emoji:'👟',likes:4650,caption:' Los mejores tenis que he probado. No es publicidad, es amor 💯',comments:base.concat(brand)})}</div>`}
+ return ''}
+function renderPhone(){const html=phoneFor(S.screen);if(html===lastPhone)return;const prevLikes=Number(($('phoneScreen').querySelector('.lk')||{}).dataset?.to||0);const changed=!!lastPhone;lastPhone=html;const sc=$('phoneScreen');sc.innerHTML=html;const fab=$('phoneFab');if(fab&&changed&&!entering){fab.classList.remove('ping');void fab.offsetWidth;fab.classList.add('ping')}
+ const lk=sc.querySelector('.lk');if(lk){const to=Number(lk.dataset.to);if(to!==prevLikes&&!reduce()){const h=sc.querySelector('.heart');h&&h.classList.add('beat');const t0=performance.now();const step=now=>{const k=Math.min(1,(now-t0)/700);lk.textContent=fmt(Math.round(prevLikes+(to-prevLikes)*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}}}
+function phoneNotify(icon,text,sub){const sc=$('phoneScreen');if(!sc)return;const n=document.createElement('div');n.className='notif';n.innerHTML=`<span class="ni">${icon}</span><div><b>${esc(text)}</b>${sub?`<small>${esc(sub)}</small>`:''}</div>`;sc.querySelectorAll('.notif').forEach(x=>x.remove());sc.append(n);setTimeout(()=>n.remove(),3300)}
+
+// ================== INDICADORES ==================
+function renderPanel(){const m=cur().metrics;const from=prevMetrics||m;$('panel').innerHTML=`<h3>Cómo va tu estrategia</h3>${METRICS.map((n,i)=>`<div class="mrow"><span>${n}</span><span class="track"><i style="width:${from[i]}%"></i></span><b>${m[i]}</b></div>`).join('')}<p class="note">Indicadores didácticos de 0 a 100: cambian con tus decisiones. No son datos reales.</p>`;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>$('panel').querySelectorAll('.track i').forEach((el,i)=>el.style.width=m[i]+'%')));prevMetrics=m.slice()}
+
+// ================== PORTADA ANIMADA ==================
+let heroTimers=[];
+function heroPlay(){const sc=$('heroScreen');sc.innerHTML=appTop('Inicio')+`<div class="feed">${postHTML({tag:'Tu primera meta también cuenta',likes:1840,caption:' Cuéntanos cuál fue tu primer kilómetro.',comments:[]})}</div>`;
+ const lk=sc.querySelector('.lk'),cm=sc.querySelector('.comments');if(reduce()){cm.innerHTML=[['ana.corre','¡El mío fue en el Simón Bolívar! 🏃‍♀️'],['coach.andres','La constancia gana 💪']].map(([w,t])=>`<div class="cm"><span class="ca">${w.slice(0,2).toUpperCase()}</span><div><b>${w}</b> ${t}</div></div>`).join('');return}
+ lk.textContent='0';const t0=performance.now();const step=now=>{const k=Math.min(1,(now-t0)/2200);lk.textContent=fmt(Math.round(1840*(1-Math.pow(1-k,3))));if(k<1)heroTimers.push(requestAnimationFrame(step))};heroTimers.push(requestAnimationFrame(step));
+ [[1300,'ana.corre','¡El mío fue en el Simón Bolívar! 🏃‍♀️'],[2600,'coach.andres','La constancia gana 💪'],[3900,'juli','¿Tienen talla 38?']].forEach(([ms,w,t])=>heroTimers.push(setTimeout(()=>{cm.insertAdjacentHTML('beforeend',`<div class="cm"><span class="ca">${w.slice(0,2).toUpperCase()}</span><div><b>${w}</b> ${t}</div></div>`);sc.querySelector('.heart').classList.remove('beat');void sc.offsetWidth;sc.querySelector('.heart').classList.add('beat')},ms)));
+ heroTimers.push(setTimeout(()=>{const n=document.createElement('div');n.className='notif';n.innerHTML='<span class="ni" style="background:var(--mint)">$</span><div><b>Nueva compra</b><small>Tenis Runner 1 · talla 38</small></div>';sc.append(n)},5000))}
+function stopHero(){heroTimers.forEach(t=>{clearTimeout(t);cancelAnimationFrame(t)});heroTimers=[]}
+
+function toggleSheet(force){const side=$('side'),fab=$('phoneFab');const open=force??!side.classList.contains('open');side.classList.toggle('open',open);fab.setAttribute('aria-expanded',open);fab.classList.remove('ping');if(open)side.querySelector('.sheet-close').focus({preventScroll:true});else fab.focus({preventScroll:true})}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('side').classList.contains('open'))toggleSheet(false)});
+
+// ================== VISTA DE MISIÓN ==================
+function missionView(i){const M=MISSIONS[i],d=cur().m[i],lock=d.done;return `
+<div class="mhead"><div class="kick"><b>Misión ${i+1} de 6</b>${esc(M.stage)}</div><h1 class="display">${esc(M.title)}</h1><p>${esc(M.lead)}</p></div>
+<section class="block"><h2><span class="step">1</span>${esc(M.concept.title)}</h2><p>${esc(M.concept.text)}</p>
+ <div class="terms">${M.concept.terms.map(([t,def],k)=>`<button type="button" class="term" data-k="term${k}" aria-expanded="${!!(d.mini['t'+k])}" onclick="act('term${k}',()=>{cur().m[${i}].mini.t${k}=!cur().m[${i}].mini.t${k}})"><b>${esc(t)}</b><span>${esc(def)}</span></button>`).join('')}</div>
+ <div class="case"><span class="badge ${M.caseReal.kind==='Caso real'?'':'sim'}">${esc(M.caseReal.kind)}</span><p><b>${esc(M.caseReal.title)}</b>${esc(M.caseReal.text)}</p></div></section>
+<section class="block ${d.score?'done':''}"><h2><span class="step">2</span>${esc(M.mini.title)}</h2><p class="help">${esc(M.mini.help)}</p>${miniView(i,lock)}</section>
+<section class="block"><h2><span class="step">3</span>Comprueba la idea</h2><p>${esc(M.check.q)}</p><div class="opts" role="radiogroup">${order(3,S.user+S.attemptNo+'c'+i).map(o=>{const [t,ok,why]=M.check.opts[o];const sel=d.check===o;const cls=lock?(ok?'right':sel?'wrong':''):'';return `<button type="button" role="radio" aria-checked="${sel}" class="opt ${cls}" data-k="c${o}" ${lock?'disabled':''} onclick="act('c${o}',()=>{cur().m[${i}].check=${o}})"><span class="mk"></span><span>${esc(t)}${lock&&(ok||sel)?`<span class="why">${esc(why)}</span>`:''}</span></button>`}).join('')}</div></section>
+<section class="block"><h2><span class="step">4</span>${esc(M.decision.title)}</h2><p>${esc(M.decision.text)}</p><div class="opts" role="radiogroup">${order(3,S.user+S.attemptNo+'d'+i).map(o=>{const op=M.decision.opts[o];const sel=d.dec===o;const best=op.pts===6;const cls=lock?(best?'right':sel?'wrong':''):'';return `<button type="button" role="radio" aria-checked="${sel}" class="opt ${cls}" data-k="d${o}" ${lock?'disabled':''} onclick="pickDecision(${i},${o})"><span class="mk"></span><span>${esc(op.t)}${lock?`<span class="why">${esc(op.why)}</span>`:''}</span>${lock?`<span class="tagpts">${op.pts} pts</span>`:''}</button>`}).join('')}</div>
+ <div class="field"><label for="reason">¿Por qué elegiste esa estrategia? Explícalo con tus palabras.</label><textarea id="reason" ${lock?'disabled':''} placeholder="Elegí esta opción porque…" oninput="cur().m[${i}].reason=this.value;save();reasonMeter(this.value)">${esc(d.reason)}</textarea><div class="meter"><span>Mínimo 40 caracteres y 7 palabras</span><b id="rm" class="${quality(d.reason).ok?'ok':''}">${quality(d.reason).len} caracteres</b></div></div>
+ ${lock?'':`<div class="submit-row"><button class="btn primary" onclick="evaluateMission(${i})">Confirmar mi estrategia</button><small>Solo puedes confirmar una vez por intento.</small></div>`}</section>
+${lock?resultBlock(i):''}`}
+function reasonMeter(v){const q=quality(v),el=$('rm');if(!el)return;el.textContent=q.len+' caracteres';el.classList.toggle('ok',q.ok)}
+function pickDecision(i,o){act('d'+o,()=>{cur().m[i].dec=o});const op=MISSIONS[i].decision.opts[o];phoneNotify('👁','Vista previa actualizada','Así se vería tu estrategia')}
+
+// ---------- actividades ----------
+function miniView(i,lock){const M=MISSIONS[i],m=M.mini,d=cur().m[i].mini,dis=lock?'disabled':'';
+ if(m.type==='ladder'){const lvl=Number(d.lvl||0);return `<div class="ladder"><label class="sr" for="lad">Nivel del mensaje</label><input id="lad" type="range" min="0" max="2" step="1" value="${lvl}" oninput="cur().m[0].mini.lvl=this.value;save();ladderLabels(this.value);renderPhone()"><div class="ladder-labels">${m.steps.map((s,k)=>`<span class="${k===lvl?'on':''}">${esc(s.k)}</span>`).join('')}</div></div>
+  <div class="classify">${m.items.map(([id,t,a])=>`<div class="cl-item"><p>${esc(t)}</p><div class="seg" role="radiogroup" aria-label="${esc(t)}">${['Atributo','Beneficio','Identidad'].map(v=>`<button type="button" role="radio" aria-checked="${d[id]===v}" data-k="${id}${v}" ${dis} onclick="act('${id}${v}',()=>{cur().m[0].mini['${id}']='${v}'})">${v}${lock&&a===v?' ✓':''}</button>`).join('')}</div></div>`).join('')}</div>`}
+ if(m.type==='creators'){return `<div class="creators" role="radiogroup">${m.creators.map(c=>{const er=c.int/c.fol*100;return `<button type="button" role="radio" aria-checked="${d.pick===c.id}" class="creator" data-k="cr${c.id}" ${dis} onclick="act('cr${c.id}',()=>{cur().m[1].mini.pick='${c.id}'});phoneNotify('👤','Perfil abierto','${esc(c.name)}')"><span class="cav">${c.av}</span><b>${esc(c.name)}</b><small>${esc(c.role)}</small><dl><dt>Seguidores</dt><dd>${fmt(c.fol)}</dd><dt>Interacciones</dt><dd>${fmt(c.int)}</dd><dt>En Bogotá</dt><dd>${c.bog} %</dd>${lock?`<dt>Tasa</dt><dd class="er">${er.toLocaleString('es-CO',{maximumFractionDigits:1})} %</dd>`:''}</dl></button>`}).join('')}</div><p class="help" style="margin-top:10px">${lock?'Coach Andrés: 1.620 ÷ 18.000 × 100 = 9 %. Valentina y FitMauro: 1,5 %. Más seguidores no significa más respuesta.':'Toca el perfil con la tasa de interacción más alta.'}</p>`}
+ if(m.type==='builder'){const grp=(title,key,arr)=>`<div><h3>${title}</h3><div class="seg" role="radiogroup" aria-label="${title}">${arr.map(([id,t,p])=>`<button type="button" role="radio" aria-checked="${d[key]===id}" data-k="${key}${id}" ${dis} onclick="act('${key}${id}',()=>{cur().m[2].mini.${key}='${id}'});phoneNotify('✎','Borrador actualizado')">${esc(t)}${lock&&p!=null?` · ${p} pts`:''}</button>`).join('')}</div></div>`;
+  return `<div class="builder">${grp('Formato','fmt',m.formats.map(([a,b])=>[a,b,null]))}${grp('Gancho: la primera frase','hook',m.hooks)}${grp('Llamado a la acción','cta',m.ctas)}</div>${lock?'<p class="help" style="margin-top:12px">Los ganchos que invitan a contar algo propio o prometen algo útil detienen el scroll sin vender a gritos. Los llamados a compartir o guardar generan participación; «compra ya» genera presión.</p>':''}`}
+ if(m.type==='sort'){return `<div class="classify">${m.items.map(([id,t,a])=>`<div class="cl-item"><p>${esc(t)}</p><div class="seg" role="radiogroup" aria-label="${esc(t)}">${[['real','Real'],['fake','Engañosa']].map(([v,l])=>`<button type="button" role="radio" class="${v}" aria-checked="${d[id]===v}" data-k="${id}${v}" ${dis} onclick="act('${id}${v}',()=>{cur().m[3].mini['${id}']='${v}'})">${l}${lock&&a===v?' ✓':''}</button>`).join('')}</div></div>`).join('')}</div>`}
+ if(m.type==='funnel'){const st=m.steps;const mult=m.fixes.reduce((a,[id,,x])=>a*(d[id]?x:1),1);const buys=Math.round(st[4][1]*mult);
+  return `<div class="funnel" role="radiogroup" aria-label="Pasos del embudo">${st.map(([n,v],k)=>{const keep=k?Math.round(v/st[k-1][1]*1000)/10:null;return `<button type="button" class="fstep" role="radio" aria-checked="${d.leak===k}" data-k="leak${k}" ${k===0||lock?'disabled':''} onclick="act('leak${k}',()=>{cur().m[4].mini.leak=${k}})"><span>${esc(n)}</span><span class="bar"><i style="width:${Math.max(1.5,Math.sqrt(v/st[0][1])*100).toFixed(1)}%"></i></span><b>${fmt(v)}</b>${k?`<small>Avanza el ${keep.toLocaleString('es-CO')} % · se pierde el ${(100-keep).toLocaleString('es-CO',{maximumFractionDigits:1})} %</small>`:'<small>Personas que vieron la publicación</small>'}</button>`}).join('')}</div>
+  ${lock?'<p class="help" style="margin-top:10px">Del carrito al pago se pierde el 92 % de quienes ya querían comprar: ahí la fricción duele más. La caída del alcance al clic es grande, pero normal: la mayoría solo estaba mirando.</p>':''}
+  <h3 style="font-size:1rem;margin:18px 0 4px;font-stretch:100%">Ahora quita fricción y mira el efecto</h3><div class="fixes">${m.fixes.map(([id,t])=>`<label class="fix"><input type="checkbox" ${d[id]?'checked':''} onchange="cur().m[4].mini.${id}=this.checked;save();updateSales()">${esc(t)}</label>`).join('')}</div><div class="sales">Compras estimadas: <strong id="salesNum">${fmt(buys)}</strong><span class="help">(simulación)</span></div>`}
+ if(m.type==='order'){const seq=d.seq||[];return `<div class="order">${m.steps.map(([id,t])=>{const p=seq.indexOf(id);return `<button type="button" class="${p>=0?'on':''}" data-k="${id}" ${dis} aria-pressed="${p>=0}" onclick="act('${id}',()=>toggleOrder('${id}'))"><span class="n">${p>=0?p+1:''}</span>${esc(t)}</button>`}).join('')}</div>${seq.length&&!lock?'<p class="help" style="margin-top:8px">Toca un paso marcado para quitarlo.</p>':''}${lock?'<p class="help" style="margin-top:10px">Orden recomendado: escuchar y verificar, reconocer, corregir y hacer seguimiento. Responder sin verificar arriesga decir algo falso; corregir sin reconocer se lee como esconder el problema.</p>':''}`}
+ return ''}
+function ladderLabels(v){document.querySelectorAll('.ladder-labels span').forEach((s,k)=>s.classList.toggle('on',k===Number(v)))}
+function toggleOrder(id){const d=cur().m[5].mini;d.seq=d.seq||[];const p=d.seq.indexOf(id);if(p>=0)d.seq.splice(p,1);else d.seq.push(id)}
+function updateSales(){const m=MISSIONS[4].mini,d=cur().m[4].mini;const mult=m.fixes.reduce((a,[id,,x])=>a*(d[id]?x:1),1);const to=Math.round(m.steps[4][1]*mult);const el=$('salesNum');const from=Number(String(el.textContent).replace(/\D/g,''))||0;if(reduce())el.textContent=fmt(to);else{const t0=performance.now();const step=now=>{const k=Math.min(1,(now-t0)/600);el.textContent=fmt(Math.round(from+(to-from)*k));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}renderPhone();if(to>from)phoneNotify('$','Más compras completadas',fmt(to)+' pedidos pagados')}
+
+// ================== EVALUACIÓN ==================
+function miniScore(i){const m=MISSIONS[i].mini,d=cur().m[i].mini;
+ if(m.type==='ladder'){if(m.items.some(([id])=>!d[id]))return {miss:'Clasifica los tres mensajes de la actividad 2.'};const c=m.items.filter(([id,,a])=>d[id]===a).length;return {pts:Math.round(4*c/3),txt:`Clasificaste bien ${c} de 3 mensajes.`}}
+ if(m.type==='creators'){if(!d.pick)return {miss:'Elige un perfil en la actividad 2.'};return {pts:d.pick===m.answer?4:0,txt:d.pick===m.answer?'Calculaste bien: Coach Andrés tiene la tasa más alta (9 %).':'La tasa más alta es la de Coach Andrés: 9 % frente a 1,5 % de los otros dos.'}}
+ if(m.type==='builder'){if(!d.fmt||!d.hook||!d.cta)return {miss:'Elige formato, gancho y llamado a la acción en la actividad 2.'};const p=m.hooks.find(x=>x[0]===d.hook)[2]+m.ctas.find(x=>x[0]===d.cta)[2];return {pts:p,txt:p===4?'Tu publicación invita a participar sin presionar.':'Revisa la publicación: un gancho que solo informa o un «compra ya» restan participación.'}}
+ if(m.type==='sort'){if(m.items.some(([id])=>!d[id]))return {miss:'Clasifica las seis señales de la actividad 2.'};let c=0,w=0;m.items.forEach(([id,,a])=>d[id]===a?c++:w++);return {pts:Math.round(4*Math.max(0,c-w)/6),txt:w?`Acertaste ${c} de 6. Cada error resta un acierto.`:'Clasificaste las seis señales correctamente.'}}
+ if(m.type==='funnel'){if(d.leak==null)return {miss:'Toca en el embudo el paso donde se pierde más gente con intención de compra.'};return {pts:d.leak===m.answer?4:0,txt:d.leak===m.answer?'Encontraste la fuga: del carrito al pago se va el 92 %.':'La fuga más costosa está entre el carrito y el pago: allí se va el 92 % de quienes ya querían comprar.'}}
+ if(m.type==='order'){const seq=d.seq||[];if(seq.length<4)return {miss:'Ordena los cuatro pasos del plan de respuesta.'};const ok=m.steps.map(x=>x[0]);const p=seq.join()===ok.join()?4:(seq[0]===ok[0]&&seq[1]===ok[1]?2:0);return {pts:p,txt:p===4?'Tu plan sigue el orden recomendado.':'Revisa el orden: primero se escucha y verifica, luego se reconoce, se corrige y se hace seguimiento.'}}
+ return {pts:0,txt:''}}
+function evaluateMission(i){const M=MISSIONS[i],d=cur().m[i];const ms=miniScore(i);
+ if(ms.miss){toast(ms.miss);return}if(d.check==null){toast('Responde la pregunta de comprobación (paso 3).');return}if(d.dec==null){toast('Elige una estrategia en el paso 4.');return}
+ const q=quality(d.reason);if(!q.ok){toast('Explica tu decisión con una frase real: mínimo 40 caracteres y 7 palabras.');$('reason')&&$('reason').focus();return}
+ const op=M.decision.opts[d.dec];const chk=M.check.opts[d.check][1]?4:0;
+ d.score={mini:ms.pts,miniTxt:ms.txt,check:chk,dec:op.pts,total:ms.pts+chk+op.pts};d.done=true;
+ cur().metrics=cur().metrics.map((v,k)=>Math.max(0,Math.min(100,v+op.fx[k])));
+ save();track('mision',{mision:i+1,etapa:M.stage,puntos_mision:d.score.total,actividad:ms.pts,comprobacion:chk,decision:op.pts,eleccion:op.t,justificacion:d.reason});
+ lastFocus=null;render();const r=document.querySelector('.result');if(r){r.scrollIntoView({behavior:reduce()?'auto':'smooth',block:'start'});const nb=r.querySelector('.btn');nb&&nb.focus({preventScroll:true})}
+ phoneNotify(op.pts===6?'★':'↺',op.pts===6?'¡La comunidad respondió!':'La comunidad reaccionó',`Misión ${i+1}: ${d.score.total} de 14 puntos`);if(d.score.total===14)burst()}
+function resultBlock(i){const M=MISSIONS[i],d=cur().m[i],s=d.score,op=M.decision.opts[d.dec];return `<section class="result" tabindex="-1"><h2>${s.total>=12?'Estrategia sólida':s.total>=8?'Vas por buen camino':'Hay mucho por ajustar'}</h2><p style="color:#c9cde6">Misión ${i+1}: ${s.total} de 14 puntos.</p>
+ <div class="pts"><span>Actividad <b>${s.mini}/4</b></span><span>Comprobación <b>${s.check}/4</b></span><span>Decisión <b>${s.dec}/6</b></span></div>
+ <div class="fb ${s.mini===4?'good':'bad'}"><b>Actividad.</b> ${esc(s.miniTxt)}</div>
+ <div class="fb ${s.check?'good':'bad'}"><b>Comprobación.</b> ${esc(M.check.opts[d.check][2])}</div>
+ <div class="fb ${op.pts===6?'good':'bad'}"><b>Tu decisión.</b> ${esc(op.why)}</div>
+ <div class="fx">${METRICS.map((n,k)=>`<span class="${op.fx[k]>=0?'up':'down'}">${n} ${op.fx[k]>=0?'+':''}${op.fx[k]}</span>`).join('')}</div>
+ <div class="lesson"><b>Para llevarte:</b> ${esc(M.lesson)}</div>
+ <div class="submit-row"><button class="btn primary" onclick="go(${i<5?i+1:"'final'"})">${i<5?'Ir a la misión '+(i+2):'Ir al reto final'}</button></div></section>`}
+
+// ================== RETO FINAL ==================
+const fieldOk=(k,v)=>{v=String(v||'').trim();return k==='business'?v.length>=12&&v.split(/\s+/).length>=2:quality(v).ok&&v.length>=50};
+const finalChecks=f=>{const filled=FINAL_FIELDS.filter(([k])=>fieldOk(k,f.fields[k])).length;return [
+ [filled===5,`Cinco respuestas desarrolladas (${filled}/5)`],
+ [!!f.mech&&quality(f.mechWhy).ok,'Un mecanismo psicológico elegido y explicado'],
+ [/compra|venta|conversi|pedido|pago|factur/i.test(f.fields.measure||''),'Una métrica de compra, no solo de alcance'],
+ [/transparen|permiso|publicidad|patrocin|reseñ|honest|consentim|declar|autoriz/i.test((f.fields.measure||'')+(f.fields.journey||'')),'Un compromiso de transparencia con tu comunidad']]};
+function finalView(){const f=cur().final,lock=f.done;return `
+<div class="mhead"><div class="kick"><b>Reto final</b>Tu marca</div><h1 class="display">Ahora llévalo a tu propio negocio</h1><p>Diseña una estrategia de social selling para tu emprendimiento o una marca colombiana que conozcas. Aquí se demuestra lo aprendido.</p></div>
+<section class="block"><h2>Tu estrategia</h2>${FINAL_FIELDS.map(([k,l,ph])=>`<div class="field"><label for="f_${k}">${esc(l)}</label>${k==='business'?`<input id="f_${k}" ${lock?'disabled':''} placeholder="${esc(ph)}" value="${esc(f.fields[k]||'')}" oninput="setFinal('${k}',this.value)">`:`<textarea id="f_${k}" ${lock?'disabled':''} placeholder="${esc(ph)}" oninput="setFinal('${k}',this.value)">${esc(f.fields[k]||'')}</textarea>`}</div>`).join('')}
+ <div class="field"><label for="f_mech">El mecanismo psicológico principal de tu estrategia</label><select id="f_mech" ${lock?'disabled':''} onchange="setFinal('mech',this.value)"><option value="">Elige uno</option>${MECHS.map(x=>`<option ${f.mech===x?'selected':''}>${x}</option>`).join('')}</select></div>
+ <div class="field"><label for="f_mechWhy">¿Por qué ese mecanismo funciona con tu comunidad?</label><textarea id="f_mechWhy" ${lock?'disabled':''} oninput="setFinal('mechWhy',this.value)">${esc(f.mechWhy||'')}</textarea></div>
+ <ul class="checklist" id="finalChecks" aria-live="polite">${checklistHTML(f)}</ul>
+ ${lock?'':`<div class="submit-row"><button class="btn primary" onclick="evaluateFinal()">Entregar mi estrategia</button><small>Al entregar se cierra este intento y se calcula tu nota.</small></div>`}</section>
+${lock?`<section class="result"><h2>Estrategia entregada</h2><div class="pts"><span>Reto final <b>${f.score.total}/16</b></span><span>Intento <b>${attemptPts()}/100</b></span></div><div class="submit-row"><button class="btn primary" onclick="go('result')">Ver mi resultado</button></div></section>`:''}`}
+function checklistHTML(f){return finalChecks(f).map(([ok,t])=>`<li class="${ok?'ok':''}"><i>${ok?'✓':''}</i>${esc(t)}</li>`).join('')}
+function setFinal(k,v){const f=cur().final;if(k==='mech')f.mech=v;else if(k==='mechWhy')f.mechWhy=v;else f.fields[k]=v;save();const el=$('finalChecks');if(el)el.innerHTML=checklistHTML(f);clearTimeout(setFinal.t);setFinal.t=setTimeout(renderPhone,250)}
+function evaluateFinal(){const f=cur().final;const short=FINAL_FIELDS.filter(([k])=>!fieldOk(k,f.fields[k]));if(short.length){toast(short[0][0]==='business'?'Escribe el nombre de tu negocio y qué vende.':`Desarrolla mejor: «${short[0][1]}» (mínimo 50 caracteres y 7 palabras).`);$('f_'+short[0][0]).focus();return}
+ if(!f.mech||!quality(f.mechWhy).ok){toast('Elige un mecanismo y explica por qué funciona con tu comunidad.');return}
+ const c=finalChecks(f);const total=10+(c[1][0]?2:0)+(c[2][0]?2:0)+(c[3][0]?2:0);f.score={total};f.done=true;
+ const pts=attemptPts(),nota=notaOf(pts);S.history.push({n:S.attemptNo,pts,nota,date:new Date().toISOString()});save();
+ track('reto',{puntos_reto:total,negocio:f.fields.business,comunidad:f.fields.audience,contenido:f.fields.content,recorrido:f.fields.journey,medicion:f.fields.measure,mecanismo:f.mech+': '+f.mechWhy});
+ track('intento',{intento:S.attemptNo,puntos_intento:pts,nota_intento:nota,promedio:avgNota()});go('result')}
+
+// ================== RESULTADO ==================
+function resultView(){const a=avgNota(),last=S.history[S.history.length-1],pass=a>=PASS_NOTA;const lastAtt=S.cur;const finished=cur().final.done;return `
+<div class="final-hero"><p style="font-weight:800;color:var(--muted)">Tu nota del laboratorio</p><div class="grade" id="gradeNum">${dec1(a)}<small> / 5,0</small></div>
+ <div class="status ${pass?'pass':'fail'}">${pass?'Aprobado':'Por mejorar'} · se aprueba con ${dec1(PASS_NOTA)}</div>
+ <p style="max-width:34em;margin:8px auto 0;color:var(--ink2)">${S.history.length===1?'Es la nota de tu único intento.':`Es el promedio de tus ${S.history.length} intentos.`} Cada intento recorre las seis misiones y el reto final.</p>
+ <div class="attempts" style="justify-content:center">${S.history.map(h=>`<span>Intento ${h.n}: ${dec1(h.nota)}</span>`).join('')}</div>
+ <div class="actions-row"><button class="btn primary" onclick="downloadCertificate()">Descargar certificado PDF</button><button class="btn ghost" onclick="downloadReport()">Descargar bitácora</button></div></div>
+${finished?`<section class="block"><h2>Último intento: ${last.pts} de 100 puntos</h2><div class="breakdown">${MISSIONS.map((m,i)=>`<div><span>${i+1}. ${esc(m.stage)} · ${esc(m.title)}</span><b>${cur().m[i].score?cur().m[i].score.total:0}/14</b></div>`).join('')}<div><span>Reto final · Tu marca</span><b>${cur().final.score?cur().final.score.total:0}/16</b></div></div></section>`:''}
+<section class="block"><h2>¿Quieres intentarlo de nuevo?</h2><p class="help">Un nuevo intento empieza desde la misión 1, con las opciones en otro orden. Tu nota final será el <b>promedio</b> de todos tus intentos, así que puede subir o bajar.</p><div class="submit-row"><button class="btn ghost" onclick="newAttempt()">${finished?'Empezar el intento '+(S.attemptNo+1):'Continuar el intento '+S.attemptNo}</button></div></section>`}
+function newAttempt(){if(!cur().final.done){go(cur().m.findIndex(x=>!x.done)>=0?cur().m.findIndex(x=>!x.done):'final');return}
+ if(!confirm(`Vas a empezar el intento ${S.attemptNo+1}. Tu nota final será el promedio de todos tus intentos. ¿Continuar?`))return;
+ S.attemptNo++;S.cur=blankAttempt();prevMetrics=null;save();track('nuevo_intento',{intento:S.attemptNo});go(0)}
+
+// ================== CERTIFICADO PDF ==================
+function pdfText(t){return '<FEFF'+[...String(t)].map(ch=>{const c=ch.codePointAt(0);return c>0xFFFF?'003F':c.toString(16).toUpperCase().padStart(4,'0')}).join('')+'>'}
+function makePdf(jpeg,w,h,title,author){const enc=new TextEncoder(),parts=[],off=[0];let pos=0;const add=x=>{const b=typeof x==='string'?enc.encode(x):x;parts.push(b);pos+=b.length};const obj=(n,s)=>{off[n]=pos;add(n+' 0 obj\n'+s+'\nendobj\n')};
+ add('%PDF-1.4\n');obj(1,'<< /Type /Catalog /Pages 2 0 R >>');obj(2,'<< /Type /Pages /Kids [3 0 R] /Count 1 >>');obj(3,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 842 595] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>');
+ off[4]=pos;add(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`);add(jpeg);add('\nendstream\nendobj\n');
+ const st='q\n842 0 0 595 0 0 cm\n/Im0 Do\nQ\n';obj(5,`<< /Length ${enc.encode(st).length} >>\nstream\n${st}endstream`);obj(6,`<< /Title ${pdfText(title)} /Author ${pdfText(author)} /Creator (Social Selling Lab) >>`);
+ const x=pos;add('xref\n0 7\n0000000000 65535 f \n');for(let i=1;i<=6;i++)add(String(off[i]).padStart(10,'0')+' 00000 n \n');add('trailer\n<< /Size 7 /Root 1 0 R /Info 6 0 R >>\nstartxref\n'+x+'\n%%EOF');return new Blob(parts,{type:'application/pdf'})}
+function downloadBlob(blob,name){const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download=name;a.style.display='none';document.body.append(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(u)},60000)}
+const safeName=()=>fullName().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
+function fitText(c,t,max,size,weight,family){let s=size;do{c.font=`${weight} ${s}px ${family}`;s-=2}while(c.measureText(t).width>max&&s>18);return t}
+async function downloadCertificate(){if(!S.history.length){toast('Termina un intento completo para obtener tu certificado.');return}
+ try{if(document.fonts&&document.fonts.ready)await document.fonts.ready}catch(e){}
+ const a=avgNota(),pass=a>=PASS_NOTA,W=2339,H=1654,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');const F="Archivo, 'Arial Narrow', Arial, sans-serif";
+ c.fillStyle='#ffffff';c.fillRect(0,0,W,H);
+ c.fillStyle='#2c3dff';c.fillRect(0,0,560,H);
+ c.save();c.globalAlpha=.12;c.fillStyle='#ffffff';for(let k=0;k<3;k++){c.save();c.translate(-100,520+k*260);c.rotate(-0.42);c.fillRect(0,0,1100,90);c.restore()}c.restore();
+ c.fillStyle='#ffffff';c.font=`800 46px ${F}`;c.fillText('Social Selling Lab',80,140);c.font=`400 30px ${F}`;c.fillStyle='#dfe3ff';c.fillText('Del scroll hasta la compra',80,190);
+ c.save();c.translate(80,H-120);c.font=`900 210px ${F}`;c.fillStyle='#ffffff';c.fillText(dec1(a),0,-60);c.font=`600 34px ${F}`;c.fillStyle='#dfe3ff';c.fillText('Nota final sobre 5,0',8,0);c.restore();
+ const x0=700;c.fillStyle='#ff2e7e';c.font=`800 34px ${F}`;c.fillText(pass?'CERTIFICADO DE APROBACIÓN':'CERTIFICADO DE PARTICIPACIÓN',x0,200);
+ c.fillStyle='#5b6280';c.font=`400 40px ${F}`;c.fillText('Se reconoce a',x0,330);
+ c.fillStyle='#101433';const nm=fullName();fitText(c,nm,W-x0-120,120,'900',F);c.fillText(nm,x0,470);
+ c.fillStyle='#101433';c.fillRect(x0,520,240,10);
+ c.fillStyle='#2a3052';c.font=`400 40px ${F}`;const lines=['por completar las seis misiones y el reto final del laboratorio de','social selling del curso Psicología del Consumidor: identidad, credibilidad,','participación, prueba social, social commerce y gestión de la confianza.'];lines.forEach((l,k)=>c.fillText(l,x0,640+k*58));
+ c.font=`700 36px ${F}`;c.fillStyle='#101433';const nI=S.history.length;c.fillText(`${nI===1?'1 intento':nI+' intentos · nota promedio'} · ${pass?'Aprobado':'No aprobado (mínimo '+dec1(PASS_NOTA)+')'}`,x0,880);
+ c.font=`400 32px ${F}`;c.fillStyle='#5b6280';c.fillText(`Usuario: ${S.user}@academia.usbbog.edu.co`,x0,1180);c.fillText('Fecha: '+new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'})+'   ·   Folio: '+S.folio,x0,1232);
+ c.font=`400 24px ${F}`;c.fillStyle='#8a90ab';c.fillText('Actividad académica independiente, no afiliada ni avalada por Adidas. Constancia educativa generada por el OVA.',x0,H-90);
+ const b64=cv.toDataURL('image/jpeg',.92).split(',')[1];const bin=atob(b64),jpg=new Uint8Array(bin.length);for(let k=0;k<bin.length;k++)jpg[k]=bin.charCodeAt(k);
+ const name='Certificado_Social_Selling_'+safeName()+'.pdf';downloadBlob(makePdf(jpg,W,H,(pass?'Certificado de aprobación - ':'Certificado de participación - ')+fullName(),fullName()),name);track('certificado',{tipo:pass?'Aprobación':'Participación',promedio:a});toast('Certificado descargado: '+name)}
+function downloadReport(){const L=['SOCIAL SELLING LAB · BITÁCORA DE APRENDIZAJE','Curso 3754 · Psicología del Consumidor','',`Estudiante: ${fullName()}`,`Usuario: ${S.user}@academia.usbbog.edu.co`,`Fecha: ${new Date().toLocaleDateString('es-CO')}`,`Intentos completos: ${S.history.length}`,...S.history.map(h=>`  Intento ${h.n}: ${h.pts}/100 · nota ${dec1(h.nota)}`),`Nota final (promedio): ${avgNota()!=null?dec1(avgNota()):'—'}`,'','INTENTO ACTUAL (#'+S.attemptNo+')'];
+ MISSIONS.forEach((M,i)=>{const d=cur().m[i];L.push('',`${i+1}. ${M.stage} · ${M.title}`);if(!d.done){L.push('   Sin completar');return}L.push(`   Puntos: ${d.score.total}/14 (actividad ${d.score.mini}, comprobación ${d.score.check}, decisión ${d.score.dec})`,`   Decisión: ${M.decision.opts[d.dec].t}`,`   Justificación: ${d.reason.trim()}`,`   Aprendizaje: ${M.lesson}`)});
+ const f=cur().final;L.push('','RETO FINAL · TU MARCA');FINAL_FIELDS.forEach(([k,l])=>L.push(`   ${l}: ${(f.fields[k]||'—').trim()}`));L.push(`   Mecanismo: ${f.mech||'—'} · ${(f.mechWhy||'').trim()}`,'','Métricas y perfiles simulados con fines educativos. Actividad no afiliada a Adidas.');
+ downloadBlob(new Blob(['\ufeff'+L.join('\n')],{type:'text/plain;charset=utf-8'}),'Bitacora_Social_Selling_'+safeName()+'.txt');track('bitacora')}
+
+// ================== CELEBRACIÓN ==================
+function burst(){if(reduce())return;const cv=document.createElement('canvas');cv.className='confetti';cv.setAttribute('aria-hidden','true');document.body.append(cv);const x=cv.getContext('2d'),W=cv.width=innerWidth,H=cv.height=innerHeight;const cols=['#2c3dff','#ff2e7e','#0fa877','#101433'];const ps=Array.from({length:110},()=>({x:W/2,y:H*.4,vx:(Math.random()-.5)*15,vy:-Math.random()*13-4,s:Math.random()*8+5,r:Math.random()*6,c:cols[Math.random()*4|0],h:Math.random()<.3}));const t0=performance.now();const tick=now=>{const t=now-t0;x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.r+=.08;x.save();x.globalAlpha=Math.max(0,1-t/2400);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;if(p.h){x.font=`${p.s*2.4}px serif`;x.fillText('♥',0,0)}else x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});if(t<2400)requestAnimationFrame(tick);else cv.remove()};requestAnimationFrame(tick)}
+
+// ================== SEGUIMIENTO ==================
+const QKEY=KEY+':cola';let flushing=false;
+function track(event,extra={}){if(!TRACK_URL||!S)return;const ev={token:TRACK_TOKEN,lab:'Social Selling Lab',event,user:S.user,nombre:fullName(),fecha:new Date().toISOString(),intento:S.attemptNo,puntos_intento:attemptPts(),misiones:doneCount(),intentos_completos:S.history.length,promedio:avgNota(),...extra};let q=[];try{q=JSON.parse(localStorage.getItem(QKEY)||'[]')}catch(e){}q.push(ev);try{localStorage.setItem(QKEY,JSON.stringify(q.slice(-80)))}catch(e){}flush()}
+async function flush(){if(!TRACK_URL||flushing||!navigator.onLine)return;flushing=true;try{let q=JSON.parse(localStorage.getItem(QKEY)||'[]');while(q.length){await fetch(TRACK_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(q[0])});q.shift();localStorage.setItem(QKEY,JSON.stringify(q))}}catch(e){}finally{flushing=false}}
+window.addEventListener('online',flush);
+
+// ================== INICIO ==================
+heroPlay();
+(()=>{let last='';try{last=localStorage.getItem(KEY+':ultimo')||''}catch(e){}if(last&&ROSTER[last]){$('userInput').value=last;lookup()}flush()})();
+</script>
+</body></html>
